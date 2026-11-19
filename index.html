@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="白黒試験官">
+<title>白黒試験官 | MONO EXAM</title>
+<style>
+  /* 完全白黒（モノクローム）徹底ルール */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  :root {
+    --bg: #ffffff;
+    --ink: #000000;
+    --gray-light: #f4f4f4;
+    --gray-mid: #d0d0d0;
+    --gray-dark: #444444;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    background-color: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    padding-bottom: 60px;
+  }
+  header {
+    border-bottom: 3px solid var(--ink);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand-title {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+  }
+  .brand-sub {
+    font-size: 10px;
+    font-weight: 700;
+    border: 1px solid var(--ink);
+    padding: 1px 5px;
+    display: inline-block;
+  }
+  .nav-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 2px solid var(--ink);
+  }
+  .nav-btn {
+    background: var(--bg);
+    color: var(--ink);
+    border: none;
+    border-right: 1px solid var(--ink);
+    padding: 12px 4px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .nav-btn:last-child { border-right: none; }
+  .nav-btn.active {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+  .section-box {
+    border: 2px solid var(--ink);
+    padding: 14px;
+    margin-bottom: 16px;
+    background: var(--bg);
+  }
+  .section-title {
+    font-size: 14px;
+    font-weight: 900;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 6px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+  input[type="text"], textarea, select {
+    width: 100%;
+    border: 2px solid var(--ink);
+    background: var(--bg);
+    color: var(--ink);
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 0;
+    margin-bottom: 10px;
+  }
+  .radio-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .radio-group.four {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .radio-item {
+    border: 2px solid var(--ink);
+    padding: 10px 6px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    background: var(--bg);
+    color: var(--ink);
+  }
+  .radio-item.selected {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .radio-item small {
+    display: block;
+    font-size: 10px;
+    font-weight: 400;
+    margin-top: 2px;
+  }
+  .photo-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .photo-thumb {
+    border: 2px solid var(--ink);
+    aspect-ratio: 1;
+    object-fit: cover;
+    width: 100%;
+    filter: grayscale(100%) contrast(120%);
+  }
+  .switch-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid var(--ink);
+    padding: 10px 12px;
+    background: var(--gray-light);
+  }
+  .toggle-btn {
+    border: 2px solid var(--ink);
+    padding: 6px 14px;
+    font-weight: 900;
+    font-size: 13px;
+    background: var(--bg);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .toggle-btn.on {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .primary-btn {
+    width: 100%;
+    background: var(--ink);
+    color: var(--bg);
+    border: 2px solid var(--ink);
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    margin-top: 6px;
+  }
+  .secondary-btn {
+    background: var(--bg);
+    color: var(--ink);
+    border: 2px solid var(--ink);
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .timer-bar {
+    border: 2px solid var(--ink);
+    background: var(--ink);
+    color: var(--bg);
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-weight: 900;
+  }
+  .question-card {
+    border: 2px solid var(--ink);
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  .q-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 900;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+  }
+  .q-body {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+  }
+  .choice-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: 2px solid var(--ink);
+    background: var(--bg);
+    color: var(--ink);
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .choice-btn.picked {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .explain-box {
+    border-top: 2px dashed var(--ink);
+    margin-top: 12px;
+    padding-top: 12px;
+    background: var(--gray-light);
+    padding: 12px;
+  }
+  .diagram-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 12px;
+    background: var(--bg);
+  }
+  .diagram-table th, .diagram-table td {
+    border: 1.5px solid var(--ink);
+    padding: 6px 8px;
+    text-align: left;
+  }
+  .diagram-table th {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .ai-comment-box {
+    border: 3px solid var(--ink);
+    padding: 14px;
+    margin-bottom: 16px;
+    background: var(--gray-light);
+  }
+  .btn-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .hidden { display: none !important; }
+
+  /* 印刷用スタイル（完全白黒） */
+  @media print {
+    header, .nav-tabs, .no-print { display: none !important; }
+    body { padding: 0; }
+    .container { max-width: 100%; padding: 0; }
+    .question-card { break-inside: avoid; }
+    body.print-exam-only .explain-box,
+    body.print-exam-only .ai-comment-box { display: none !important; }
+    body.print-explain-only .choice-area { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <!-- 白黒アプリアイコン SVG -->
+    <svg id="app-icon-svg" width="38" height="38" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="96" height="96" rx="18" fill="#000000" stroke="#000000" stroke-width="4"/>
+      <rect x="14" y="14" width="72" height="72" rx="10" fill="#ffffff"/>
+      <path d="M26 32 H74 M26 48 H62 M26 64 H50" stroke="#000000" stroke-width="7" stroke-linecap="square"/>
+      <path d="M56 64 L66 74 L82 52" fill="none" stroke="#000000" stroke-width="8" stroke-linecap="square"/>
+    </svg>
+    <div>
+      <div class="brand-title">白黒試験官</div>
+      <div class="brand-sub">MONO EXAM GENERATOR</div>
+    </div>
+  </div>
+  <button class="secondary-btn no-print" onclick="downloadIconPNG()">アイコン保存</button>
+</header>
+
+<nav class="nav-tabs no-print">
+  <button class="nav-btn active" id="tab-create" onclick="switchTab('create')">① テスト作成</button>
+  <button class="nav-btn" id="tab-exam" onclick="switchTab('exam')">② 試験・解説</button>
+  <button class="nav-btn" id="tab-review" onclick="switchTab('review')">③ 振り返り・分析</button>
+</nav>
+
+<div class="container">
+
+  <!-- 画面1: テスト作成 -->
+  <div id="view-create">
+    <div class="section-box">
+      <div class="section-title">1. 出題範囲（単元名・写真 併用OK）</div>
+      <label>単元名・キーワード（例：二次関数、明治維新、関係代名詞）</label>
+      <input type="text" id="unit-input" placeholder="単元名を入力（写真だけでもOK）">
+
+      <label>教科書・ノートの写真（複数枚選択可能）</label>
+      <input type="file" id="photo-input" accept="image/*" multiple onchange="handlePhotos(event)" style="margin-bottom:8px;">
+      <div id="photo-count" style="font-size:12px; font-weight:700;">選択中の写真: 0枚</div>
+      <div class="photo-preview-grid" id="photo-preview"></div>
+    </div>
+
+    <div class="section-box">
+      <div class="section-title">2. 難易度設定</div>
+      <div class="radio-group" id="diff-group">
+        <div class="radio-item" data-val="easy" onclick="selectOption('diff', this)">簡単<small>基礎・土台固め</small></div>
+        <div class="radio-item selected" data-val="normal" onclick="selectOption('diff', this)">普通<small>学校の定期テスト</small></div>
+        <div class="radio-item" data-val="hard" onclick="selectOption('diff', this)">難関<small>大学入試レベル</small></div>
+      </div>
+
+      <div class="section-title">3. 時間設定（時間に応じて問題数が変化）</div>
+      <div class="radio-group four" id="time-group">
+        <div class="radio-item selected" data-val="10" onclick="selectOption('time', this)">10分<small>要点チェック (3問)</small></div>
+        <div class="radio-item" data-val="30" onclick="selectOption('time', this)">30分<small>小テスト形式 (6問)</small></div>
+        <div class="radio-item" data-val="50" onclick="selectOption('time', this)">50分<small>標準テスト (10問)</small></div>
+        <div class="radio-item" data-val="90" onclick="selectOption('time', this)">1時間30分<small>本格模試 (15問)</small></div>
+      </div>
+
+      <div class="section-title">4. 問題形式モード</div>
+      <div class="radio-group" id="mode-group">
+        <div class="radio-item selected" data-val="moshi" onclick="selectOption('mode', this)">模試モード<small>記述・思考力重視</small></div>
+        <div class="radio-item" data-val="kyotsu" onclick="selectOption('mode', this)">共通テスト<small>会話文・資料読解</small></div>
+        <div class="radio-item" data-val="data" onclick="selectOption('mode', this)">データモード<small>写真・図表から出題</small></div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <div class="section-title">5. 弱点分析＆苦手多め出題</div>
+      <div class="switch-row">
+        <div>
+          <div style="font-size:13px; font-weight:900;">間違えやすい問題を気持ち多めに出題</div>
+          <div style="font-size:11px;">※OFFでも裏側で間違い傾向の分析は常に進みます</div>
+        </div>
+        <button class="toggle-btn on" id="weak-toggle" onclick="toggleWeakMode()">ON</button>
+      </div>
+    </div>
+
+    <button class="primary-btn" onclick="generateExam()">この条件で白黒テストを作成する</button>
+  </div>
+
+  <!-- 画面2: 試験・解説 -->
+  <div id="view-exam" class="hidden">
+    <div id="exam-empty" class="section-box" style="text-align:center; padding:30px;">
+      <p style="font-weight:800;">まだテストが作成されていません。</p>
+      <button class="secondary-btn" style="margin-top:10px;" onclick="switchTab('create')">テスト作成画面へ戻る</button>
+    </div>
+
+    <div id="exam-active" class="hidden">
+      <div class="timer-bar no-print">
+        <span id="exam-meta-label">模試モード / 普通</span>
+        <span id="timer-display">残り 10:00</span>
+      </div>
+
+      <div id="ai-feedback-area" class="ai-comment-box hidden">
+        <div style="font-weight:900; font-size:14px; margin-bottom:4px;">【AI試験官からのアドバイス（中学生向け）】</div>
+        <div id="ai-comment-text" style="font-size:13px;"></div>
+        <div id="score-result" style="font-size:18px; font-weight:900; margin-top:8px; border-top:1px solid #000; padding-top:6px;"></div>
+      </div>
+
+      <div id="questions-container"></div>
+
+      <button id="grade-btn" class="primary-btn no-print" onclick="gradeExam()">採点して中学生向け解説を見る</button>
+
+      <!-- 印刷・保存メニュー -->
+      <div class="section-box no-print" style="margin-top:20px;">
+        <div class="section-title">プリントアウト・データ保存</div>
+        <div class="btn-grid">
+          <button class="secondary-btn" onclick="printMode('exam')">問題用紙のみ印刷</button>
+          <button class="secondary-btn" onclick="printMode('explain')">解説集のみ印刷</button>
+          <button class="secondary-btn" onclick="printMode('all')">問題＋解説を印刷</button>
+          <button class="secondary-btn" onclick="downloadExamText()">テキスト(.txt)で保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 画面3: 振り返り・分析 -->
+  <div id="view-review" class="hidden">
+    <div class="section-box">
+      <div class="section-title">AIによるあなたの解答傾向分析（常時稼働中）</div>
+      <div id="analysis-summary" style="font-size:13px; line-height:1.7;"></div>
+    </div>
+
+    <div class="section-box">
+      <div class="section-title">
+        <span>間違えた問題の振り返りリスト</span>
+        <button class="secondary-btn" style="padding:4px 8px; font-size:11px;" onclick="clearAllMistakes()">全削除</button>
+      </div>
+      <div id="mistake-list"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // アプリ状態管理
+  let state = {
+    diff: 'normal',
+    time: 10,
+    mode: 'moshi',
+    weakFocus: true,
+    photos: [],
+    currentExam: [],
+    userAnswers: {},
+    graded: false,
+    timerId: null,
+    secondsLeft: 600
+  };
+
+  // ローカルストレージから弱点データ・間違い履歴を読込
+  let analytics = JSON.parse(localStorage.getItem('mono_exam_analytics') || '{"totalAnswered":0,"totalWrong":0,"weakTags":{"計算・処理ミス":1,"資料・条件の読み落とし":1,"基本用語の混同":0}}');
+  let mistakes = JSON.parse(localStorage.getItem('mono_exam_mistakes') || '[]');
+
+  function saveStorage() {
+    localStorage.setItem('mono_exam_analytics', JSON.stringify(analytics));
+    localStorage.setItem('mono_exam_mistakes', JSON.stringify(mistakes));
+  }
+
+  function switchTab(tab) {
+    ['create', 'exam', 'review'].forEach(t => {
+      document.getElementById('view-' + t).classList.add('hidden');
+      document.getElementById('tab-' + t).classList.remove('active');
+    });
+    document.getElementById('view-' + tab).classList.remove('hidden');
+    document.getElementById('tab-' + tab).classList.add('active');
+    if (tab === 'review') renderReviewTab();
+  }
+
+  function selectOption(group, el) {
+    document.querySelectorAll(`#${group}-group .radio-item`).forEach(item => item.classList.remove('selected'));
+    el.classList.add('selected');
+    state[group] = group === 'time' ? Number(el.dataset.val) : el.dataset.val;
+  }
+
+  function toggleWeakMode() {
+    state.weakFocus = !state.weakFocus;
+    const btn = document.getElementById('weak-toggle');
+    btn.textContent = state.weakFocus ? 'ON' : 'OFF';
+    btn.classList.toggle('on', state.weakFocus);
+  }
+
+  function handlePhotos(e) {
+    const files = Array.from(e.target.files);
+    state.photos = [];
+    const preview = document.getElementById('photo-preview');
+    preview.innerHTML = '';
+    document.getElementById('photo-count').textContent = `選択中の写真: ${files.length}枚`;
+
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        state.photos.push({ name: file.name, data: ev.target.result });
+        const img = document.createElement('img');
+        img.src = ev.target.result;
+        img.className = 'photo-thumb';
+        preview.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function generateExam() {
+    const unit = document.getElementById('unit-input').value.trim();
+    if (!unit && state.photos.length === 0) {
+      alert('「単元名」を入力するか、「写真」を1枚以上選んでください！');
+      return;
+    }
+
+    const topicLabel = unit ? unit : `アップロード資料(${state.photos.length}枚)`;
+    const countMap = { 10: 3, 30: 6, 50: 10, 90: 15 };
+    const qCount = countMap[state.time] || 3;
+
+    // 弱点タグの特定
+    const sortedTags = Object.entries(analytics.weakTags).sort((a, b) => b[1] - a[1]);
+    const topWeakTag = sortedTags[0][0];
+
+    const modeNames = { moshi: '模試モード', kyotsu: '共通テストモード', data: 'データモード' };
+    const diffNames = { easy: '簡単', normal: '普通', hard: '難関' };
+
+    state.currentExam = [];
+    state.userAnswers = {};
+    state.graded = false;
+
+    for (let i = 1; i <= qCount; i++) {
+      // 弱点多めONの場合、奇数問に苦手タグを優先配置
+      const tag = (state.weakFocus && i % 2 === 1) ? topWeakTag : sortedTags[i % sortedTags.length][0];
+      state.currentExam.push(buildQuestionItem(i, topicLabel, state.diff, state.mode, tag, state.photos.length > 0));
+    }
+
+    document.getElementById('exam-empty').classList.add('hidden');
+    document.getElementById('exam-active').classList.remove('hidden');
+    document.getElementById('ai-feedback-area').classList.add('hidden');
+    document.getElementById('grade-btn').classList.remove('hidden');
+    document.getElementById('exam-meta-label').textContent = `${modeNames[state.mode]} / ${diffNames[state.diff]} / ${qCount}問`;
+
+    renderQuestions();
+    startTimer(state.time * 60);
+    switchTab('exam');
+  }
+
+  function buildQuestionItem(num, topic, diff, mode, tag, hasPhoto) {
+    let prefix = '';
+    if (mode === 'kyotsu') prefix = `【共通テスト型・会話と資料】\n先生と生徒が「${topic}」について話し合っています。`;
+    else if (mode === 'data') prefix = `【データ読解型】\n${hasPhoto ? '読み込んだ写真データ' : '観測データ表'}をもとに、「${topic}」の法則を分析しなさい。`;
+    else prefix = `【模試形式・大問${num}】\n「${topic}」の重要ポイントに関する問いに答えなさい。`;
+
+    const levelNote = diff === 'easy' ? '（基本の確認）' : diff === 'normal' ? '（標準・応用）' : '（入試実戦・ひっかけ注意）';
+    const qText = `${prefix}\n問${num}${levelNote}：「${topic}」において、${tag}に注意しながら最も適切な結論を1つ選びなさい。`;
+
+    const choices = [
+      `ア：基本原理どおりに条件を整理して導かれる正しい結論`,
+      `イ：条件の1つを見落としたときに出やすい典型的なミス`,
+      `ウ：似た用語と意味を逆に取り違えた選択肢`,
+      `エ：例外パターンを考慮せずに計算した誤答`
+    ];
+
+    const ytQuery = encodeURIComponent(`${topic} わかりやすく 中学生 解説`);
+    const explainText = `【中学生向けイメージ解説】\nこの問題は「${topic}」のルールをそのまま使うのではなく、条件を1つずつ整理できるかがカギだよ！\n焦ってすぐ答えを出そうとすると「${tag}」に引っかかりやすいから、下の図表で整理してみよう。`;
+
+    const diagramHtml = `
+      <table class="diagram-table">
+        <tr><th>チェック項目</th><th>正しい考え方（○）</th><th>よくある間違い（×）</th></tr>
+        <tr><td>1. 言葉の意味</td><td>定義を正確に当てはめる</td><td>似た言葉と混同する</td></tr>
+        <tr><td>2. 条件の確認</td><td>すべてメモして確認する</td><td>頭の中だけで暗算する</td></tr>
+      </table>
+    `;
+
+    return {
+      id: Date.now() + num,
+      num,
+      topic,
+      tag,
+      qText,
+      choices,
+      correctIndex: 0,
+      explainText,
+      diagramHtml,
+      youtubeUrl: `https://www.youtube.com/results?search_query=${ytQuery}`
+    };
+  }
+
+  function renderQuestions() {
+    const container = document.getElementById('questions-container');
+    container.innerHTML = '';
+
+    state.currentExam.forEach((q, idx) => {
+      const card = document.createElement('div');
+      card.className = 'question-card';
+
+      let choicesHtml = '<div class="choice-area">';
+      q.choices.forEach((c, cIdx) => {
+        const picked = state.userAnswers[idx] === cIdx ? 'picked' : '';
+        choicesHtml += `<button class="choice-btn ${picked}" onclick="pickAnswer(${idx}, ${cIdx})">${c}</button>`;
+      });
+      choicesHtml += '</div>';
+
+      let explainHtml = '';
+      if (state.graded) {
+        const isCorrect = state.userAnswers[idx] === q.correctIndex;
+        const mark = isCorrect ? '【正解 ○】' : '【不正解 ×】';
+        explainHtml = `
+          <div class="explain-box">
+            <div style="font-weight:900; font-size:14px; margin-bottom:6px;">${mark} 正解：${q.choices[q.correctIndex]}</div>
+            <div style="font-size:13px; white-space:pre-wrap;">${q.explainText}</div>
+            ${q.diagramHtml}
+            <div style="margin-top:8px; font-size:12px;">
+              ▶ 解説動画を探す：<a href="${q.youtubeUrl}" target="_blank" style="color:#000; font-weight:900;">YouTubeで「${q.topic}」の解説動画を見る</a>
+            </div>
+          </div>
+        `;
+      }
+
+      card.innerHTML = `
+        <div class="q-header">
+          <span>第${q.num}問 [${q.topic}]</span>
+          <span>重点テーマ: ${q.tag}</span>
+        </div>
+        <div class="q-body">${q.qText}</div>
+        ${choicesHtml}
+        ${explainHtml}
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function pickAnswer(qIdx, cIdx) {
+    if (state.graded) return;
+    state.userAnswers[qIdx] = cIdx;
+    renderQuestions();
+  }
+
+  function gradeExam() {
+    if (state.timerId) clearInterval(state.timerId);
+    state.graded = true;
+
+    let correctCount = 0;
+    let wrongTagsThisTime = [];
+
+    state.currentExam.forEach((q, idx) => {
+      analytics.totalAnswered += 1;
+      if (state.userAnswers[idx] === q.correctIndex) {
+        correctCount += 1;
+      } else {
+        analytics.totalWrong += 1;
+        analytics.weakTags[q.tag] = (analytics.weakTags[q.tag] || 0) + 1;
+        wrongTagsThisTime.push(q.tag);
+        // 振り返りリストへ自動保存
+        mistakes.unshift({
+          id: q.id + Math.random(),
+          topic: q.topic,
+          tag: q.tag,
+          qText: q.qText,
+          answer: q.choices[q.correctIndex],
+          explainText: q.explainText,
+          date: new Date().toLocaleDateString('ja-JP')
+        });
+      }
+    });
+
+    saveStorage();
+
+    // 中学生向けの端的なAIコメント生成
+    const score = Math.round((correctCount / state.currentExam.length) * 100);
+    let advice = '';
+    if (score === 100) {
+      advice = '全問正解！基礎も条件整理もバッチリだね。次は難易度を1つ上げて挑戦してみよう！';
+    } else {
+      const mainWeak = wrongTagsThisTime[0] || '条件の読み落とし';
+      advice = `おつかれさま！君は「${mainWeak}」でつまずきやすいクセがあるよ。問題を解くとき、大事な数字や言葉にシャーペンで線を引きながら読むだけで点数がグッと伸びるよ！`;
+    }
+
+    document.getElementById('ai-feedback-area').classList.remove('hidden');
+    document.getElementById('ai-comment-text').textContent = advice;
+    document.getElementById('score-result').textContent = `得点：${score}点（${state.currentExam.length}問中 ${correctCount}問正解）`;
+    document.getElementById('grade-btn').classList.add('hidden');
+
+    renderQuestions();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function startTimer(sec) {
+    if (state.timerId) clearInterval(state.timerId);
+    state.secondsLeft = sec;
+    updateTimerDisplay();
+    state.timerId = setInterval(() => {
+      state.secondsLeft--;
+      updateTimerDisplay();
+      if (state.secondsLeft <= 0) {
+        clearInterval(state.timerId);
+        alert('時間終了です！自動で採点します。');
+        gradeExam();
+      }
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    const m = String(Math.floor(state.secondsLeft / 60)).padStart(2, '0');
+    const s = String(state.secondsLeft % 60).padStart(2, '0');
+    document.getElementById('timer-display').textContent = `残り ${m}:${s}`;
+  }
+
+  function renderReviewTab() {
+    const sorted = Object.entries(analytics.weakTags).sort((a, b) => b[1] - a[1]);
+    const summaryEl = document.getElementById('analysis-summary');
+    summaryEl.innerHTML = `
+      ・累計解答数：<b>${analytics.totalAnswered}問</b>（うち間違い：<b>${analytics.totalWrong}問</b>）<br>
+      ・一番注意すべきクセ：<b>【${sorted[0][0]}】</b>（ミス回数 ${sorted[0][1]}回）<br>
+      ※この分析はテスト作成のON/OFFに関係なく常に裏側でアップデートされています。
+    `;
+
+    const listEl = document.getElementById('mistake-list');
+    if (mistakes.length === 0) {
+      listEl.innerHTML = '<p style="font-size:13px;">現在、振り返りリストに間違えた問題はありません。</p>';
+      return;
+    }
+
+    listEl.innerHTML = '';
+    mistakes.forEach((m, index) => {
+      const div = document.createElement('div');
+      div.className = 'question-card';
+      div.innerHTML = `
+        <div class="q-header">
+          <span>${m.date} / ${m.topic}</span>
+          <button class="secondary-btn" style="padding:2px 8px; font-size:11px;" onclick="deleteMistake(${index})">削除</button>
+        </div>
+        <div style="font-size:13px; font-weight:700; margin-bottom:6px;">${m.qText}</div>
+        <div style="font-size:12px; background:#f4f4f4; padding:8px; border:1px solid #000;">
+          <b>正解：</b>${m.answer}<br>
+          <b>解説：</b>${m.explainText}
+        </div>
+      `;
+      listEl.appendChild(div);
+    });
+  }
+
+  function deleteMistake(idx) {
+    mistakes.splice(idx, 1);
+    saveStorage();
+    renderReviewTab();
+  }
+
+  function clearAllMistakes() {
+    if (!confirm('振り返りリストをすべて削除しますか？')) return;
+    mistakes = [];
+    saveStorage();
+    renderReviewTab();
+  }
+
+  function printMode(mode) {
+    document.body.classList.remove('print-exam-only', 'print-explain-only');
+    if (mode === 'exam') document.body.classList.add('print-exam-only');
+    if (mode === 'explain') document.body.classList.add('print-explain-only');
+    window.print();
+  }
+
+  function downloadExamText() {
+    if (state.currentExam.length === 0) return;
+    let txt = '=== 白黒試験官 テスト＆解説データ ===\n\n';
+    state.currentExam.forEach(q => {
+      txt += `【第${q.num}問】(${q.topic})\n${q.qText}\n`;
+      q.choices.forEach(c => txt += `  ${c}\n`);
+      txt += `\n[正解] ${q.choices[q.correctIndex]}\n[中学生向け解説]\n${q.explainText}\n------------------------------------\n\n`;
+    });
+    const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'monochrome_exam.txt';
+    a.click();
+  }
+
+  function downloadIconPNG() {
+    const svg = document.getElementById('app-icon-svg');
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 512;
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, 512, 512);
+      const a = document.createElement('a');
+      a.download = 'mono-exam-icon.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    };
+    img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+  }
+</script>
+</body>
+</html>
