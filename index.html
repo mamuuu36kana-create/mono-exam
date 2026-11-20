@@ -3,1045 +3,967 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>MONO-TEST | モノクロAIテスト作成・学習アプリ</title>
+  <!-- ホーム画面追加用のアイコン指定 -->
+  <link rel="apple-touch-icon" href="icon.png" />
+  <link rel="icon" type="image/png" href="icon.png" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <meta name="apple-mobile-web-app-title" content="AIテスト作成" />
-  <meta name="theme-color" content="#000000" />
-  <title>モノクロAIテスト作成スタジオ</title>
-  <link id="app-icon-link" rel="apple-touch-icon" href="" />
-  <link id="favicon-link" rel="icon" type="image/png" href="" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="MONO-TEST" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
-    /* 完全白黒（モノクローム）デザインシステム */
-    :root {
-      --bg: #ffffff;
-      --fg: #000000;
-      --gray-100: #f5f5f5;
-      --gray-200: #e5e5e5;
-      --gray-300: #cccccc;
-      --gray-600: #555555;
-      --border: 2px solid #000000;
-      --border-thin: 1px solid #000000;
-    }
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-    body {
+    * { box-sizing: border-box; }
+    html, body {
+      background-color: #ffffff;
+      color: #000000;
+      font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
       margin: 0;
       padding: 0;
-      font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
-      background-color: var(--bg);
-      color: var(--fg);
-      line-height: 1.6;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
-    header {
-      background: #000000;
-      color: #ffffff;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 3px solid #000000;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .header-title {
-      font-size: 1.1rem;
-      font-weight: 900;
-      letter-spacing: 0.04em;
-    }
-    .icon-btn {
-      background: #ffffff;
+    .exam-serif { font-family: "Hiragino Mincho ProN", "Yu Mincho", "MS PMincho", serif; }
+    .mono-border { border: 1.5px solid #000000; }
+    .mono-border-thick { border: 2.5px solid #000000; }
+    .mono-btn {
+      background-color: #ffffff;
       color: #000000;
-      border: 2px solid #ffffff;
-      padding: 6px 10px;
-      font-size: 0.78rem;
-      font-weight: bold;
+      border: 1.5px solid #000000;
+      font-weight: 700;
+      transition: background-color 0.12s, color 0.12s;
       cursor: pointer;
     }
-    .icon-btn:active {
-      background: #cccccc;
-    }
-    nav {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      border-bottom: var(--border);
-      background: #ffffff;
-    }
-    nav button {
-      background: #ffffff;
-      color: #000000;
-      border: none;
-      border-right: var(--border-thin);
-      padding: 12px 4px;
-      font-weight: bold;
-      font-size: 0.85rem;
+    .mono-btn:hover:not(:disabled) { background-color: #000000; color: #ffffff; }
+    .mono-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .mono-btn-primary {
+      background-color: #000000;
+      color: #ffffff;
+      border: 1.5px solid #000000;
+      font-weight: 700;
       cursor: pointer;
     }
-    nav button:last-child {
-      border-right: none;
-    }
-    nav button.active {
-      background: #000000;
+    .mono-btn-primary:hover:not(:disabled) { background-color: #333333; }
+    .mono-btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+    .radio-card input[type="radio"] { display: none; }
+    .radio-card input[type="radio"]:checked + .radio-label {
+      background-color: #000000;
       color: #ffffff;
+      font-weight: 700;
     }
-    main {
-      max-width: 820px;
-      margin: 0 auto;
-      padding: 16px 14px 80px;
-    }
-    .section-card {
-      border: var(--border);
-      padding: 16px;
-      margin-bottom: 18px;
-      background: #ffffff;
-    }
-    .section-title {
-      font-size: 1rem;
-      font-weight: 900;
-      border-bottom: var(--border);
-      padding-bottom: 6px;
-      margin: 0 0 14px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    label {
+    .radio-label {
       display: block;
-      font-weight: bold;
-      margin-bottom: 6px;
-      font-size: 0.9rem;
-    }
-    input[type="text"],
-    input[type="password"],
-    textarea,
-    select {
-      width: 100%;
-      border: var(--border);
-      padding: 10px;
-      font-size: 1rem;
+      border: 1.5px solid #000000;
       background: #ffffff;
       color: #000000;
-      border-radius: 0;
-      margin-bottom: 12px;
-    }
-    .radio-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-    .radio-option {
-      border: var(--border);
-      padding: 10px 8px;
-      text-align: center;
-      font-weight: bold;
-      font-size: 0.85rem;
-      cursor: pointer;
-      background: #ffffff;
-      color: #000000;
-    }
-    .radio-option.selected {
-      background: #000000;
-      color: #ffffff;
-    }
-    .radio-option small {
-      display: block;
-      font-weight: normal;
-      font-size: 0.72rem;
-      margin-top: 2px;
-    }
-    .btn-primary {
-      width: 100%;
-      background: #000000;
-      color: #ffffff;
-      border: var(--border);
-      padding: 14px;
-      font-size: 1.05rem;
-      font-weight: 900;
-      cursor: pointer;
-      letter-spacing: 0.05em;
-    }
-    .btn-primary:disabled {
-      background: #777777;
-      border-color: #777777;
-      cursor: not-allowed;
-    }
-    .btn-secondary {
-      background: #ffffff;
-      color: #000000;
-      border: var(--border);
-      padding: 9px 12px;
-      font-size: 0.85rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .btn-secondary:active {
-      background: #e5e5e5;
-    }
-    .btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 12px 0;
-    }
-    .image-preview-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-    .image-preview-item {
-      position: relative;
-      width: 76px;
-      height: 76px;
-      border: var(--border);
-    }
-    .image-preview-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: grayscale(100%) contrast(120%);
-    }
-    .image-remove {
-      position: absolute;
-      top: 0;
-      right: 0;
-      background: #000000;
-      color: #ffffff;
-      border: none;
-      width: 22px;
-      height: 22px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border: var(--border-thin);
-      padding: 10px;
-      background: var(--gray-100);
-      margin-bottom: 14px;
-    }
-    .question-box {
-      border: var(--border);
-      padding: 14px;
-      margin-bottom: 16px;
-      background: #ffffff;
-    }
-    .question-header {
-      font-weight: 900;
-      border-bottom: var(--border-thin);
-      padding-bottom: 4px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-    }
-    .choice-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border: var(--border-thin);
       padding: 8px 10px;
-      margin-bottom: 6px;
+      text-align: center;
       cursor: pointer;
+      user-select: none;
     }
-    .explanation-box {
-      margin-top: 12px;
-      border-top: 2px dashed #000000;
-      padding-top: 12px;
-      background: var(--gray-100);
-      padding: 12px;
-    }
-    .diagram-box {
-      border: var(--border-thin);
-      background: #ffffff;
+    .md-content table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.92rem; }
+    .md-content th, .md-content td { border: 1.5px solid #000000; padding: 6px 10px; text-align: left; }
+    .md-content th { background-color: #efefef; font-weight: 700; }
+    .md-content pre {
+      border: 1.5px solid #000000;
+      background-color: #fafafa;
       padding: 10px;
-      font-family: monospace;
-      white-space: pre-wrap;
-      margin: 8px 0;
-      font-size: 0.85rem;
+      overflow-x: auto;
+      font-family: "Courier New", monospace;
+      line-height: 1.4;
+      font-size: 0.88rem;
     }
-    .judge-mark {
-      font-size: 1.2rem;
-      font-weight: 900;
-      padding: 2px 8px;
-      border: 2px solid #000000;
-      display: inline-block;
-      margin-bottom: 6px;
-    }
-    .hidden {
-      display: none !important;
-    }
-    .timer-bar {
-      background: #000000;
-      color: #ffffff;
-      padding: 8px 14px;
-      font-weight: 900;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-    .stat-bar-bg {
-      width: 100%;
-      height: 18px;
-      border: var(--border);
+    .md-content a { color: #000000; text-decoration: underline; font-weight: 700; }
+    .exam-sheet {
       background: #ffffff;
-      margin-top: 4px;
+      border: 2px solid #000000;
+      padding: 24px 28px;
+      max-width: 860px;
+      margin: 0 auto;
     }
-    .stat-bar-fill {
-      height: 100%;
-      background: repeating-linear-gradient(
-        45deg,
-        #000000,
-        #000000 6px,
-        #555555 6px,
-        #555555 12px
-      );
-    }
-    /* A4印刷用レイアウト制御 */
     @media print {
-      header, nav, .no-print {
-        display: none !important;
-      }
-      body {
-        background: #ffffff;
-        color: #000000;
-      }
-      main {
-        max-width: 100%;
-        padding: 0;
-        margin: 0;
-      }
-      .print-sheet {
-        page-break-after: always;
-      }
-      body.print-mode-exam .only-answer-sheet,
-      body.print-mode-exam .only-explanation {
-        display: none !important;
-      }
-      body.print-mode-answer .only-exam-sheet,
-      body.print-mode-answer .only-explanation {
-        display: none !important;
-      }
-      body.print-mode-explanation .only-exam-sheet,
-      body.print-mode-explanation .only-answer-sheet {
-        display: none !important;
-      }
+      @page { size: A4 portrait; margin: 12mm; }
+      body { background: #ffffff !important; color: #000000 !important; }
+      .no-print { display: none !important; }
+      .exam-sheet { border: none !important; padding: 0 !important; max-width: 100% !important; }
     }
   </style>
 </head>
-<body>
-  <header>
-    <div class="header-left">
-      <svg id="app-logo-svg" width="32" height="32" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-        <rect x="4" y="4" width="112" height="112" rx="22" fill="#FFFFFF" stroke="#000000" stroke-width="6"/>
-        <rect x="26" y="20" width="54" height="72" fill="#FFFFFF" stroke="#000000" stroke-width="6"/>
-        <line x1="36" y1="36" x2="68" y2="36" stroke="#000000" stroke-width="5"/>
-        <line x1="36" y1="50" x2="68" y2="50" stroke="#000000" stroke-width="5"/>
-        <line x1="36" y1="64" x2="54" y2="64" stroke="#000000" stroke-width="5"/>
-        <circle cx="76" cy="78" r="22" fill="#FFFFFF" stroke="#000000" stroke-width="6"/>
-        <circle cx="76" cy="78" r="12" fill="none" stroke="#000000" stroke-width="5"/>
-      </svg>
-      <div class="header-title">AIテスト作成スタジオ</div>
+<body class="min-h-screen flex flex-col">
+
+  <!-- ヘッダー -->
+  <header class="no-print border-b-2 border-black bg-white sticky top-0 z-30">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 border-2 border-black flex items-center justify-center font-black text-lg bg-black text-white">問</div>
+        <div>
+          <h1 class="text-lg font-black tracking-wider leading-none">MONO-TEST</h1>
+          <p class="text-[11px] font-bold tracking-tight mt-0.5">白黒印刷特化・AIテスト作成＆弱点克服システム</p>
+        </div>
+      </div>
+
+      <nav class="flex flex-wrap gap-1.5 text-xs">
+        <button onclick="switchTab('create')" id="nav-create" class="mono-btn-primary px-3 py-1.5">① テスト作成</button>
+        <button onclick="switchTab('exam')" id="nav-exam" class="mono-btn px-3 py-1.5">② 問題・解答</button>
+        <button onclick="switchTab('explain')" id="nav-explain" class="mono-btn px-3 py-1.5">③ 採点・解説</button>
+        <button onclick="switchTab('review')" id="nav-review" class="mono-btn px-3 py-1.5">④ 振り返り帳 (<span id="review-count">0</span>)</button>
+        <button onclick="switchTab('settings')" id="nav-settings" class="mono-btn px-3 py-1.5">⚙ API設定</button>
+      </nav>
     </div>
-    <button class="icon-btn" onclick="downloadAppIcon()">アイコン保存</button>
   </header>
 
-  <nav class="no-print">
-    <button id="tab-create" class="active" onclick="switchTab('create')">1. テスト作成</button>
-    <button id="tab-exam" onclick="switchTab('exam')">2. 受験・採点</button>
-    <button id="tab-review" onclick="switchTab('review')">3. 振り返り</button>
-    <button id="tab-analysis" onclick="switchTab('analysis')">4. 弱点分析</button>
-  </nav>
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-6">
 
-  <main>
-    <!-- タブ1: テスト作成 -->
-    <section id="view-create">
-      <div class="section-card">
-        <div class="section-title">
-          <span>AI接続設定（初回のみ）</span>
-        </div>
-        <label for="api-key-input">Gemini APIキー（自動問題作成・手書き写真採点に使用）</label>
-        <input type="password" id="api-key-input" placeholder="AIzaSy...（空欄の場合はデモ問題で動作確認可能）" onchange="saveApiKey()" />
-        <small>※キーはこの端末のブラウザ内にのみ保存され、外部には送信されません。</small>
+    <!-- APIキー未設定時の案内バナー -->
+    <div id="api-warning-banner" class="no-print hidden mono-border-thick p-3 mb-5 bg-neutral-100 flex flex-wrap items-center justify-between gap-2">
+      <div class="text-xs font-bold">
+        ⚠ AIを動かすための「Gemini APIキー」がまだ登録されていません。右上の「⚙ API設定」から入力してください。
       </div>
+      <button onclick="switchTab('settings')" class="mono-btn-primary px-3 py-1 text-xs">設定画面を開く</button>
+    </div>
 
-      <div class="section-card">
-        <div class="section-title"><span>出題範囲の指定（単元名・写真 併用可）</span></div>
-        <label for="topic-input">単元名・テーマ</label>
-        <input type="text" id="topic-input" placeholder="例：中学2年 一次関数 / 戦国時代〜江戸幕府 / 関係代名詞" />
+    <!-- ==================== TAB 1: テスト作成 ==================== -->
+    <section id="tab-create" class="space-y-6">
+      <div class="mono-border-thick p-4 bg-white">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b-2 border-black pb-2 mb-4">
+          <h2 class="text-base font-black">出題条件の設定（完全モノクロ印刷対応）</h2>
+          <label class="flex items-center gap-2 text-xs font-bold cursor-pointer select-none border border-black px-2.5 py-1">
+            <input type="checkbox" id="weakness-boost" checked class="w-4 h-4 accent-black" />
+            <span>弱点傾向を分析して苦手問題を多めに出題（ON/OFF）</span>
+          </label>
+        </div>
 
-        <label for="image-input">教科書・ノート・プリントの写真（複数選択可）</label>
-        <input type="file" id="image-input" accept="image/*" multiple onchange="handleRangeImages(event)" />
-        <div id="range-image-previews" class="image-preview-list"></div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-title"><span>テスト条件の設定</span></div>
-
-        <label>難易度</label>
-        <div class="radio-grid" id="difficulty-group">
-          <div class="radio-option" data-val="簡単" onclick="selectOption('difficulty', this)">
-            簡単<small>基礎・土台固め</small>
-          </div>
-          <div class="radio-option selected" data-val="普通" onclick="selectOption('difficulty', this)">
-            普通<small>学校の定期テスト</small>
-          </div>
-          <div class="radio-option" data-val="難関" onclick="selectOption('difficulty', this)">
-            難関<small>大学入試レベル</small>
+        <div class="mb-5">
+          <label class="block text-sm font-black mb-1.5">1. 出題範囲の指定（単元名・参考写真のどちらか、または両方）</label>
+          <div class="grid md:grid-cols-2 gap-3">
+            <div class="mono-border p-3">
+              <div class="text-xs font-bold mb-1">■ 単元名・キーワードで指定</div>
+              <input type="text" id="topic-input" placeholder="例：二次関数の最大・最小、鎌倉幕府の成立、関係代名詞"
+                class="w-full border border-black p-2 text-sm focus:outline-none" />
+            </div>
+            <div class="mono-border p-3">
+              <div class="text-xs font-bold mb-1">■ 教科書・ノート・プリントの写真（複数枚可）</div>
+              <input type="file" id="ref-images" accept="image/*" multiple onchange="handleRefImages(event)"
+                class="w-full text-xs file:mr-2 file:py-1 file:px-2 file:border file:border-black file:bg-white file:font-bold cursor-pointer" />
+              <div id="ref-preview" class="flex flex-wrap gap-2 mt-2"></div>
+            </div>
           </div>
         </div>
 
-        <label>制限時間（時間に合わせて問題数を自動調整）</label>
-        <div class="radio-grid" id="time-group">
-          <div class="radio-option selected" data-val="10" onclick="selectOption('time', this)">
-            10分<small>約3〜4問</small>
-          </div>
-          <div class="radio-option" data-val="30" onclick="selectOption('time', this)">
-            30分<small>約6〜8問</small>
-          </div>
-          <div class="radio-option" data-val="50" onclick="selectOption('time', this)">
-            50分<small>約10〜12問</small>
-          </div>
-          <div class="radio-option" data-val="90" onclick="selectOption('time', this)">
-            1時間30分<small>約15〜18問</small>
-          </div>
-        </div>
-
-        <label>問題形式</label>
-        <div class="radio-grid" id="format-group">
-          <div class="radio-option selected" data-val="模試モード" onclick="selectOption('format', this)">
-            模試モード<small>思考力・総合問題</small>
-          </div>
-          <div class="radio-option" data-val="共通テストモード" onclick="selectOption('format', this)">
-            共通テスト<small>資料・会話文読解</small>
-          </div>
-          <div class="radio-option" data-val="データモード" onclick="selectOption('format', this)">
-            データモード<small>写真・表を忠実再現</small>
-          </div>
-        </div>
-
-        <label>解答方法</label>
-        <div class="radio-grid" id="answerType-group">
-          <div class="radio-option selected" data-val="複合（記述と選択肢）" onclick="selectOption('answerType', this)">
-            複合（標準）<small>記述＋選択肢</small>
-          </div>
-          <div class="radio-option" data-val="記述のみ" onclick="selectOption('answerType', this)">
-            記述のみ<small>用語・計算・論述</small>
-          </div>
-          <div class="radio-option" data-val="選択肢のみ" onclick="selectOption('answerType', this)">
-            選択肢のみ<small>マーク式4択</small>
-          </div>
-        </div>
-
-        <div class="toggle-row">
+        <div class="grid md:grid-cols-2 gap-4 mb-5">
           <div>
-            <strong>弱点重点出題モード</strong><br />
-            <small>過去の誤答傾向から苦手な問題を多めに作成（分析自体は常に実行）</small>
+            <label class="block text-sm font-black mb-1.5">2. 難易度指定</label>
+            <div class="grid grid-cols-3 gap-1.5 text-xs">
+              <label class="radio-card">
+                <input type="radio" name="difficulty" value="簡単（基本的な問題、単元を理解するための土台となる問題）" />
+                <span class="radio-label">簡単<br><span class="text-[10px] font-normal">基礎・土台固め</span></span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="difficulty" value="普通（基本問題と応用問題、学校の定期テストレベル）" checked />
+                <span class="radio-label">普通<br><span class="text-[10px] font-normal">定期テスト・活用</span></span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="difficulty" value="難関（大学入試レベル、受験の武器になる実戦問題）" />
+                <span class="radio-label">難関<br><span class="text-[10px] font-normal">大学入試レベル</span></span>
+              </label>
+            </div>
           </div>
-          <input type="checkbox" id="weakness-boost-toggle" checked style="width:24px;height:24px;" />
+
+          <div>
+            <label class="block text-sm font-black mb-1.5">3. 制限時間（時間に合わせて問題数・量を自動調整）</label>
+            <div class="grid grid-cols-4 gap-1.5 text-xs">
+              <label class="radio-card">
+                <input type="radio" name="duration" value="10" checked />
+                <span class="radio-label">10分<br><span class="text-[10px] font-normal">小テスト</span></span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="duration" value="30" />
+                <span class="radio-label">30分<br><span class="text-[10px] font-normal">単元演習</span></span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="duration" value="50" />
+                <span class="radio-label">50分<br><span class="text-[10px] font-normal">定期考査</span></span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="duration" value="90" />
+                <span class="radio-label">1時間30分<br><span class="text-[10px] font-normal">本格模試</span></span>
+              </label>
+            </div>
+          </div>
         </div>
 
-        <button id="generate-btn" class="btn-primary" onclick="generateTest()">
-          白黒テストを作成する
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label class="block text-sm font-black mb-1.5">4. 問題形式モード</label>
+            <div class="grid grid-cols-3 gap-1.5 text-xs">
+              <label class="radio-card">
+                <input type="radio" name="examMode" value="模試モード（記述・論述や大問構成を備えた本格模試形式）" checked />
+                <span class="radio-label">模試モード<br><span class="text-[10px] font-normal">大問・実戦形式</span></span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="examMode" value="共通テストモード（会話文・資料読解・思考力を問うマークシート風形式）" />
+                <span class="radio-label">共通テスト<br><span class="text-[10px] font-normal">資料・思考力</span></span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="examMode" value="データモード（読み込んだ写真や資料の数値・図表・出題傾向を忠実に再現した形式）" />
+                <span class="radio-label">データモード<br><span class="text-[10px] font-normal">写真・資料準拠</span></span>
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-black mb-1.5">5. 解答方法</label>
+            <div class="grid grid-cols-3 gap-1.5 text-xs">
+              <label class="radio-card">
+                <input type="radio" name="answerStyle" value="複合（記述問題と選択肢問題の両方をバランスよく含める）" checked />
+                <span class="radio-label">複合(標準)<br><span class="text-[10px] font-normal">記述＋選択肢</span></span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="answerStyle" value="記述のみ（すべて自分で言葉・数式・記号を書いて答える形式）" />
+                <span class="radio-label">記述のみ<br><span class="text-[10px] font-normal">全問記述式</span></span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="answerStyle" value="選択肢のみ（すべてア・イ・ウ・エ等の選択式で答える形式）" />
+                <span class="radio-label">選択肢のみ<br><span class="text-[10px] font-normal">全問選択式</span></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="generateTest()" id="generate-btn" class="mono-btn-primary w-full py-3.5 text-base tracking-widest">
+          ▶ この条件で白黒テスト＆解答用紙を作成する
         </button>
-      </div>
-    </section>
 
-    <!-- タブ2: 受験・採点 -->
-    <section id="view-exam" class="hidden">
-      <div id="exam-empty" class="section-card">
-        <p>まだテストが作成されていません。「1. テスト作成」からテストを作ってください。</p>
+        <div id="loading-box" class="hidden mt-4 mono-border p-4 text-center">
+          <p class="font-black text-sm animate-pulse" id="loading-text">AIが試験問題・解答用紙・中学生向け図表解説を作成しています...</p>
+          <p class="text-xs mt-1">※制限時間に応じた問題数を設計中です（15〜30秒ほどかかります）</p>
+        </div>
       </div>
 
-      <div id="exam-container" class="hidden">
-        <div class="timer-bar no-print">
-          <span id="exam-meta-label">テスト実施中</span>
-          <span id="timer-display">残り 10:00</span>
-        </div>
-
-        <div class="section-card no-print">
-          <div class="section-title"><span>印刷・PDF保存・データ保存</span></div>
-          <div class="btn-row">
-            <button class="btn-secondary" onclick="printSheet('exam')">問題用紙を印刷</button>
-            <button class="btn-secondary" onclick="printSheet('answer')">解答用紙を印刷</button>
-            <button class="btn-secondary" onclick="printSheet('explanation')">解説書を印刷</button>
-            <button class="btn-secondary" onclick="downloadTestText()">テキスト保存</button>
-          </div>
-        </div>
-
-        <!-- 問題用紙エリア -->
-        <div class="section-card print-sheet only-exam-sheet">
-          <div class="section-title">
-            <span id="sheet-title">実力確認テスト</span>
-            <span id="sheet-sub">氏名：＿＿＿＿＿＿＿＿＿＿</span>
-          </div>
-          <div id="questions-list"></div>
-        </div>
-
-        <!-- 印刷用 解答用紙エリア -->
-        <div class="section-card print-sheet only-answer-sheet">
-          <div class="section-title">
-            <span>解答用紙</span>
-            <span>氏名：＿＿＿＿＿＿＿＿＿＿ / 得点：＿＿＿点</span>
-          </div>
-          <div id="printable-answer-sheet"></div>
-        </div>
-
-        <!-- 採点方法の選択 -->
-        <div class="section-card no-print">
-          <div class="section-title"><span>答え合わせ（2通りの採点方法）</span></div>
-          <button class="btn-primary" onclick="gradeDirectAnswers()" style="margin-bottom:12px;">
-            ① 画面に入力した解答で丸つけする
-          </button>
-
-          <div style="border-top: 2px solid #000; padding-top: 12px;">
-            <label for="handwritten-input">② 印刷した解答用紙・ノートの手書き写真で丸つけする（複数枚可）</label>
-            <input type="file" id="handwritten-input" accept="image/*" multiple />
-            <button class="btn-secondary" style="width:100%;" onclick="gradePhotoAnswers()">
-              手書き解答の写真を読み取ってAI採点する
-            </button>
-          </div>
-        </div>
-
-        <!-- 採点結果・中学生向け解説エリア -->
-        <div id="result-section" class="section-card hidden print-sheet only-explanation">
-          <div class="section-title">
-            <span>採点結果 ＆ 中学生向けくわしい解説</span>
-            <span id="total-score-badge">得点: --</span>
-          </div>
-          <div id="ai-coach-comment" style="border:2px solid #000; padding:12px; margin-bottom:14px; background:#f5f5f5;"></div>
-          <div id="explanations-list"></div>
+      <div class="mono-border p-4 bg-white">
+        <h3 class="text-sm font-black border-b border-black pb-1 mb-2">■ AI弱点傾向データベース（自動分析ログ）</h3>
+        <p class="text-xs mb-2">※この分析は弱点出題のON/OFFに関わらず自動で記録・更新され続けます。</p>
+        <div id="weakness-summary-box" class="text-xs border border-black p-3 bg-neutral-50 leading-relaxed">
+          まだ採点履歴がありません。テストを解いて採点すると、あなたの間違えやすい単元やミスの癖がここに蓄積されます。
         </div>
       </div>
     </section>
 
-    <!-- タブ3: 振り返り -->
-    <section id="view-review" class="hidden">
-      <div class="section-card">
-        <div class="section-title">
-          <span>間違えた問題の振り返りリスト</span>
-          <button class="btn-secondary" onclick="clearAllReviews()">全削除</button>
+    <!-- ==================== TAB 2: 問題用紙・解答用紙 ==================== -->
+    <section id="tab-exam" class="hidden space-y-4">
+      <div class="no-print mono-border p-3 bg-white flex flex-wrap items-center justify-between gap-2">
+        <div class="flex flex-wrap gap-1.5 text-xs">
+          <button onclick="setPaperView('both')" id="view-both" class="mono-btn-primary px-3 py-1.5">問題＋解答用紙</button>
+          <button onclick="setPaperView('question')" id="view-question" class="mono-btn px-3 py-1.5">問題用紙のみ</button>
+          <button onclick="setPaperView('answer')" id="view-answer" class="mono-btn px-3 py-1.5">解答用紙のみ</button>
         </div>
-        <p style="font-size:0.85rem;">採点で間違えた問題が自動でここに溜まります。覚え直したら「習得済（削除）」を押そう！</p>
-        <div id="review-list"></div>
+        <div class="flex flex-wrap gap-1.5 text-xs">
+          <button onclick="window.print()" class="mono-btn px-3 py-1.5">🖨 プリント / PDF保存</button>
+          <button onclick="downloadTextData('exam')" class="mono-btn px-3 py-1.5">💾 データ保存(.txt)</button>
+        </div>
+      </div>
+
+      <div id="empty-exam-msg" class="mono-border p-8 text-center text-sm font-bold">
+        まだテストが作成されていません。「① テスト作成」から問題を作成してください。
+      </div>
+
+      <div id="exam-container" class="hidden space-y-8">
+        <div id="question-paper" class="exam-sheet exam-serif">
+          <div class="border-b-2 border-black pb-3 mb-4 flex justify-between items-end">
+            <div>
+              <div class="text-xs font-bold" id="paper-meta">試験時間：10分 ／ 難易度：普通</div>
+              <h2 class="text-xl font-black mt-1" id="paper-title">確認テスト</h2>
+            </div>
+            <table class="border-collapse border border-black text-xs">
+              <tr>
+                <td class="border border-black px-2 py-1 font-bold">年・組・番</td>
+                <td class="border border-black px-8 py-1"></td>
+                <td class="border border-black px-2 py-1 font-bold">氏名</td>
+                <td class="border border-black px-12 py-1"></td>
+              </tr>
+            </table>
+          </div>
+          <div class="text-xs border border-black p-2 mb-5">
+            【注意事項】問題用紙は白黒印刷用です。答えはすべて「解答用紙」の所定の欄に記入するか、画面上の解答欄に入力して採点してください。
+          </div>
+          <div id="questions-list" class="space-y-6 text-sm leading-relaxed"></div>
+        </div>
+
+        <div id="answer-sheet-paper" class="exam-sheet">
+          <div class="border-b-2 border-black pb-2 mb-4 flex justify-between items-center">
+            <div>
+              <h2 class="text-lg font-black">解答用紙（アプリ入力 ＆ 印刷手書き両対応）</h2>
+              <p class="text-xs">※このまま印刷して手書きしたものをスマホ等で撮影し、下のボタンから写真採点することもできます。</p>
+            </div>
+            <div class="border-2 border-black px-4 py-1 text-right">
+              <span class="text-xs font-bold">得点：</span>
+              <span class="text-lg font-black" id="score-display">　　</span>
+              <span class="text-xs font-bold"> / 100点</span>
+            </div>
+          </div>
+
+          <div id="answer-inputs-list" class="space-y-3 mb-6"></div>
+
+          <div class="no-print border-t-2 border-black pt-4 space-y-4">
+            <div class="grid md:grid-cols-2 gap-3">
+              <div class="mono-border p-3">
+                <div class="text-xs font-black mb-1">方法A：上の解答欄に直接入力して丸つけ</div>
+                <p class="text-[11px] mb-2">入力した内容をもとにAIが記述問題も含めて自動採点します。</p>
+                <button onclick="gradeFromInput()" id="grade-input-btn" class="mono-btn-primary w-full py-2 text-xs">
+                  ✓ 入力内容で答え合わせする
+                </button>
+              </div>
+              <div class="mono-border p-3">
+                <div class="text-xs font-black mb-1">方法B：手書きした解答用紙の写真を読み取って丸つけ</div>
+                <input type="file" id="handwritten-image" accept="image/*" class="w-full text-xs mb-2 file:border file:border-black file:bg-white file:px-2 file:py-0.5 file:font-bold" />
+                <button onclick="gradeFromPhoto()" id="grade-photo-btn" class="mono-btn-primary w-full py-2 text-xs">
+                  📷 解答用紙の写真から自動採点する
+                </button>
+              </div>
+            </div>
+            <div id="grading-loading" class="hidden text-center text-xs font-black py-2 border border-black">
+              AI先生が採点＆中学生向けのわかりやすい解説を作成中...
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- タブ4: 弱点分析 -->
-    <section id="view-analysis" class="hidden">
-      <div class="section-card">
-        <div class="section-title"><span>AI弱点分析・間違えやすい癖レポート</span></div>
-        <div id="analysis-summary"></div>
+    <!-- ==================== TAB 3: 採点結果・中学生向け解説 ==================== -->
+    <section id="tab-explain" class="hidden space-y-4">
+      <div class="no-print mono-border p-3 bg-white flex flex-wrap items-center justify-between gap-2">
+        <span class="text-xs font-black">採点結果 ＆ 中学生向け図表解説シート</span>
+        <div class="flex gap-1.5 text-xs">
+          <button onclick="window.print()" class="mono-btn px-3 py-1.5">🖨 解説をプリント / PDF保存</button>
+          <button onclick="downloadTextData('explain')" class="mono-btn px-3 py-1.5">💾 解説データ保存(.txt)</button>
+        </div>
+      </div>
+
+      <div id="empty-explain-msg" class="mono-border p-8 text-center text-sm font-bold">
+        まだ採点が行われていません。「② 問題・解答」タブで答え合わせを実行すると、ここに詳しい解説が表示されます。
+      </div>
+
+      <div id="explain-container" class="hidden exam-sheet space-y-6">
+        <div class="border-2 border-black p-4 bg-neutral-50">
+          <div class="flex flex-wrap justify-between items-center border-b border-black pb-2 mb-2">
+            <span class="text-sm font-black">■ AI先生からの個別アドバイス（あなたの癖と攻略法）</span>
+            <span class="text-base font-black" id="result-score-badge">得点：-- / 100点</span>
+          </div>
+          <p id="ai-coach-comment" class="text-sm leading-relaxed font-bold"></p>
+        </div>
+        <div id="question-explanations-list" class="space-y-6"></div>
       </div>
     </section>
+
+    <!-- ==================== TAB 4: 振り返り帳 ==================== -->
+    <section id="tab-review" class="hidden space-y-4">
+      <div class="mono-border-thick p-4 bg-white">
+        <div class="flex flex-wrap justify-between items-center border-b-2 border-black pb-2 mb-3 gap-2">
+          <div>
+            <h2 class="text-base font-black">振り返り帳（間違えた問題の復習リスト）</h2>
+            <p class="text-xs">一度間違えた問題が自動保存されます。復習して理解できたら削除できます。</p>
+          </div>
+          <button onclick="clearAllReviews()" class="mono-btn px-3 py-1 text-xs">すべて削除</button>
+        </div>
+        <div id="review-list" class="space-y-4"></div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 5: API設定 ==================== -->
+    <section id="tab-settings" class="hidden space-y-4">
+      <div class="mono-border-thick p-5 bg-white space-y-4">
+        <h2 class="text-base font-black border-b-2 border-black pb-2">⚙ Gemini APIキー設定（自分のスマホ専用保存）</h2>
+        <p class="text-xs leading-relaxed">
+          GitHubで公開したアプリからAI（Gemini）を使うために、自分の<strong>Gemini APIキー</strong>をここに入力してください。<br>
+          入力したキーはこのブラウザ（スマホ・PCの中）だけに保存され、外部に公開されることはありません。
+        </p>
+        <div>
+          <label class="block text-xs font-black mb-1">Gemini API キー（AIza... から始まる文字列）</label>
+          <input type="password" id="api-key-input" placeholder="AIzaSy..." class="w-full border-2 border-black p-2.5 text-sm font-mono" />
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="saveApiKey()" class="mono-btn-primary px-5 py-2 text-xs">💾 この端末に保存する</button>
+          <button onclick="deleteApiKey()" class="mono-btn px-4 py-2 text-xs">🗑 キーを削除する</button>
+        </div>
+        <div id="api-save-msg" class="text-xs font-bold"></div>
+      </div>
+    </section>
+
   </main>
 
   <script>
-    // 状態管理
-    const state = {
-      difficulty: '普通',
-      time: '10',
-      format: '模試モード',
-      answerType: '複合（記述と選択肢）',
-      rangeImages: [],
-      currentTest: null,
-      timerId: null,
-      remainingSeconds: 600
-    };
+    const STORAGE_KEY_API = 'monotest_gemini_api_key_v1';
+    const STORAGE_KEY_REVIEWS = 'monotest_wrong_questions_v1';
+    const STORAGE_KEY_WEAKNESS = 'monotest_weakness_profile_v1';
 
-    // 初期化
+    let refImagesBase64 = [];
+    let currentExam = null;
+    let currentGradingResult = null;
+
     window.addEventListener('DOMContentLoaded', () => {
-      const savedKey = localStorage.getItem('mono_exam_api_key');
-      if (savedKey) document.getElementById('api-key-input').value = savedKey;
-      generateAppIconDataUrl();
-      renderReviewList();
-      renderAnalysis();
+      const savedKey = localStorage.getItem(STORAGE_KEY_API) || '';
+      document.getElementById('api-key-input').value = savedKey;
+      updateApiBanner();
+      updateReviewUI();
+      updateWeaknessUI();
     });
 
-    // SVGからホーム画面用PNGアイコンを自動生成
-    function generateAppIconDataUrl() {
-      const svgEl = document.getElementById('app-logo-svg');
-      const svgData = new XMLSerializer().serializeToString(svgEl);
-      const canvas = document.createElement('canvas');
-      canvas.width = 512;
-      canvas.height = 512;
-      const ctx = canvas.getContext('2d');
-      const img = new Image();
-      img.onload = () => {
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(0, 0, 512, 512);
-        ctx.drawImage(img, 0, 0, 512, 512);
-        const pngUrl = canvas.toDataURL('image/png');
-        document.getElementById('app-icon-link').href = pngUrl;
-        document.getElementById('favicon-link').href = pngUrl;
-      };
-      img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+    function getApiKey() {
+      return (localStorage.getItem(STORAGE_KEY_API) || '').trim();
     }
 
-    function downloadAppIcon() {
-      const href = document.getElementById('app-icon-link').href;
-      if (!href) return;
-      const a = document.createElement('a');
-      a.href = href;
-      a.download = 'test_app_icon_512.png';
-      a.click();
+    function updateApiBanner() {
+      const banner = document.getElementById('api-warning-banner');
+      if (!getApiKey()) {
+        banner.classList.remove('hidden');
+      } else {
+        banner.classList.add('hidden');
+      }
     }
 
     function saveApiKey() {
       const val = document.getElementById('api-key-input').value.trim();
-      localStorage.setItem('mono_exam_api_key', val);
+      if (!val) {
+        alert('APIキーを入力してください。');
+        return;
+      }
+      localStorage.setItem(STORAGE_KEY_API, val);
+      updateApiBanner();
+      document.getElementById('api-save-msg').textContent = '✓ 保存しました！「① テスト作成」からすぐ使えます。';
+    }
+
+    function deleteApiKey() {
+      localStorage.removeItem(STORAGE_KEY_API);
+      document.getElementById('api-key-input').value = '';
+      updateApiBanner();
+      document.getElementById('api-save-msg').textContent = '削除しました。';
     }
 
     function switchTab(tabName) {
-      ['create', 'exam', 'review', 'analysis'].forEach(t => {
-        document.getElementById('view-' + t).classList.toggle('hidden', t !== tabName);
-        document.getElementById('tab-' + t).classList.toggle('active', t === tabName);
+      ['create', 'exam', 'explain', 'review', 'settings'].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.add('hidden');
+        const btn = document.getElementById(`nav-${t}`);
+        btn.classList.remove('mono-btn-primary');
+        btn.classList.add('mono-btn');
       });
-      if (tabName === 'review') renderReviewList();
-      if (tabName === 'analysis') renderAnalysis();
+      document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`nav-${tabName}`);
+      activeBtn.classList.remove('mono-btn');
+      activeBtn.classList.add('mono-btn-primary');
     }
 
-    function selectOption(group, el) {
-      state[group] = el.dataset.val;
-      const parent = document.getElementById(group + '-group');
-      parent.querySelectorAll('.radio-option').forEach(opt => opt.classList.remove('selected'));
-      el.classList.add('selected');
+    function setPaperView(mode) {
+      ['both', 'question', 'answer'].forEach(m => {
+        const b = document.getElementById(`view-${m}`);
+        b.classList.remove('mono-btn-primary');
+        b.classList.add('mono-btn');
+      });
+      document.getElementById(`view-${mode}`).classList.remove('mono-btn');
+      document.getElementById(`view-${mode}`).classList.add('mono-btn-primary');
+
+      const qPaper = document.getElementById('question-paper');
+      const aPaper = document.getElementById('answer-sheet-paper');
+      qPaper.classList.toggle('hidden', mode === 'answer');
+      aPaper.classList.toggle('hidden', mode === 'question');
     }
 
-    function handleRangeImages(e) {
-      const files = Array.from(e.target.files);
+    function handleRefImages(event) {
+      const files = Array.from(event.target.files);
+      refImagesBase64 = [];
+      const preview = document.getElementById('ref-preview');
+      preview.innerHTML = '';
+
       files.forEach(file => {
         const reader = new FileReader();
-        reader.onload = ev => {
-          state.rangeImages.push(ev.target.result);
-          renderRangePreviews();
+        reader.onload = e => {
+          const dataUrl = e.target.result;
+          const base64 = dataUrl.split(',')[1];
+          refImagesBase64.push({ mimeType: file.type, data: base64 });
+          const img = document.createElement('img');
+          img.src = dataUrl;
+          img.className = 'w-14 h-14 object-cover border border-black grayscale';
+          preview.appendChild(img);
         };
         reader.readAsDataURL(file);
       });
     }
 
-    function renderRangePreviews() {
-      const container = document.getElementById('range-image-previews');
-      container.innerHTML = '';
-      state.rangeImages.forEach((src, idx) => {
-        const div = document.createElement('div');
-        div.className = 'image-preview-item';
-        div.innerHTML = `<img src="${src}" /><button class="image-remove" onclick="removeRangeImage(${idx})">×</button>`;
-        container.appendChild(div);
+    async function callGemini(parts, jsonSchema = null) {
+      const apiKey = getApiKey();
+      if (!apiKey) {
+        switchTab('settings');
+        throw new Error('先に「⚙ API設定」からGemini APIキーを登録してください。');
+      }
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+      const body = {
+        contents: [{ role: 'user', parts }],
+        generationConfig: { temperature: 0.4 }
+      };
+      if (jsonSchema) {
+        body.generationConfig.responseMimeType = 'application/json';
+        body.generationConfig.responseSchema = jsonSchema;
+      }
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       });
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`APIエラー (${res.status}): APIキーが正しいか確認してください。`);
+      }
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      return jsonSchema ? JSON.parse(text) : text;
     }
 
-    function removeRangeImage(idx) {
-      state.rangeImages.splice(idx, 1);
-      renderRangePreviews();
+    function getWeaknessProfile() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY_WEAKNESS)) || { history: [], summary: '' };
+      } catch {
+        return { history: [], summary: '' };
+      }
     }
 
-    // 問題数目安
-    function getQuestionCountByTime(min) {
-      if (min === '10') return 3;
-      if (min === '30') return 6;
-      if (min === '50') return 10;
-      return 15;
+    function updateWeaknessUI() {
+      const profile = getWeaknessProfile();
+      const box = document.getElementById('weakness-summary-box');
+      if (!profile.summary && profile.history.length === 0) return;
+      box.innerHTML = `
+        <div class="font-bold mb-1">【AIが分析したあなたの弱点傾向】</div>
+        <div>${escapeHtml(profile.summary || 'データ蓄積中...')}</div>
+        <div class="mt-2 text-[11px]">直近のミス記録：${profile.history.slice(-5).map(h => `「${escapeHtml(h)}」`).join(' / ')}</div>
+      `;
     }
 
-    // テスト生成
     async function generateTest() {
       const topic = document.getElementById('topic-input').value.trim();
-      if (!topic && state.rangeImages.length === 0) {
-        alert('「単元名」か「範囲の写真」のどちらか（または両方）を入力してね！');
+      if (!topic && refImagesBase64.length === 0) {
+        alert('「単元名」を入力するか、「参考写真」を1枚以上アップロードしてください。');
         return;
       }
+
+      const difficulty = document.querySelector('input[name="difficulty"]:checked').value;
+      const duration = document.querySelector('input[name="duration"]:checked').value;
+      const examMode = document.querySelector('input[name="examMode"]:checked').value;
+      const answerStyle = document.querySelector('input[name="answerStyle"]:checked').value;
+      const weaknessBoost = document.getElementById('weakness-boost').checked;
+      const profile = getWeaknessProfile();
+
+      const countGuide = {
+        '10': '小問4〜5問（10分で無理なく解き切れる分量）',
+        '30': '大問2つ・計8〜10問（30分で集中して解ける標準演習量）',
+        '50': '大問3〜4つ・計14〜18問（50分の定期テスト相当の分量）',
+        '90': '大問4〜5つ・計20〜25問（90分の本格模試・入試演習相当の分量）'
+      }[duration];
 
       const btn = document.getElementById('generate-btn');
+      const loading = document.getElementById('loading-box');
       btn.disabled = true;
-      btn.textContent = 'AIが問題と図表を作成中...';
-
-      const qCount = getQuestionCountByTime(state.time);
-      const apiKey = document.getElementById('api-key-input').value.trim();
-      const boostWeakness = document.getElementById('weakness-boost-toggle').checked;
-      const history = JSON.parse(localStorage.getItem('mono_exam_history') || '[]');
-      const weakTopics = history.slice(-10).map(h => h.topic).join('、');
-
-      if (!apiKey) {
-        // APIキー未入力時は動作確認用デモテストを生成
-        setTimeout(() => {
-          state.currentTest = createDemoTest(topic || 'アップロード画像範囲', qCount);
-          renderExam();
-          btn.disabled = false;
-          btn.textContent = '白黒テストを作成する';
-          switchTab('exam');
-        }, 600);
-        return;
-      }
+      loading.classList.remove('hidden');
 
       try {
         const promptText = `
-あなたは優秀なテスト作成AIです。以下の条件で白黒印刷用のテスト問題を作成し、必ず純粋なJSONのみを返してください。
-【条件】
-- 単元名: ${topic || '添付画像の内容に基づく'}
-- 難易度: ${state.difficulty}
-- 制限時間: ${state.time}分（問題数は必ず${qCount}問にする）
-- 問題形式: ${state.format}
-- 解答方法: ${state.answerType}
-- 弱点傾向の反映: ${boostWeakness && weakTopics ? `過去の誤答単元(${weakTopics})に近い考え方を気持ち多めに含める` : '標準配分'}
-- 解説ルール: すべて「中学生に優しく説明する語り口」にし、必ず文字の整理図表(diagram)と、関連するYouTube検索キーワード(youtubeQuery)を含めること。
+あなたは日本の学校・予備校の優秀な作問者です。以下の条件に厳密に従ってテスト問題を作成してください。
+【出題条件】
+- 単元名・指定範囲: ${topic || '添付画像の単元・内容に基づく'}
+- 難易度: ${difficulty}
+- 制限時間と問題量: ${duration}分（目安: ${countGuide}）
+- 問題形式モード: ${examMode}
+- 解答方法: ${answerStyle}
+- 弱点重点出題: ${weaknessBoost && profile.summary ? `【ON】受験者の弱点傾向「${profile.summary}」を踏まえ、間違いやすいタイプの問題を気持ち多めに混ぜること。` : '標準バランスで出題'}
 
-【出力JSONフォーマット】
-{
-  "title": "テストのタイトル",
-  "questions": [
-    {
-      "number": 1,
-      "type": "choice" または "text",
-      "question": "問題文",
-      "choices": ["ア. ...", "イ. ...", "ウ. ...", "エ. ..."],
-      "answer": "模範解答",
-      "explanation": "中学生にわかりやすく噛み砕いた解説",
-      "diagram": "テキストで作った整理表や図解（例: [原因] -> [結果]）",
-      "youtubeQuery": "単元名 わかりやすい解説"
-    }
-  ]
-}`;
+【重要ルール】
+1. 白黒印刷専用のため、問題文中で「赤線部」「青色のグラフ」など色の名前を絶対に使わないこと（「下線部」「太線」「破線」などを使う）。
+2. 図や表が必要な問題では、問題文（questionText）の中にASCII罫線図やMarkdown表を使って白黒でくっきり見やすい図表を含めること。
+3. 解説（explanation）は必ず「中学生に隣で優しく説明する口調」で書くこと。専門用語はかみ砕き、必ず文字と図表（ASCII図や比較表）を使って視覚的に理解できるようにすること。
+4. youtubeSearchKeyword には、その問題の単元をわかりやすく解説している授業動画を探すための具体的な検索キーワードを入れること。
+`;
 
         const parts = [{ text: promptText }];
-        state.rangeImages.forEach(dataUrl => {
-          const base64 = dataUrl.split(',')[1];
-          const mime = dataUrl.split(';')[0].split(':')[1];
-          parts.push({ inline_data: { mime_type: mime, data: base64 } });
+        refImagesBase64.forEach(img => {
+          parts.push({ inlineData: { mimeType: img.mimeType, data: img.data } });
         });
 
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts }],
-            generationConfig: { responseMimeType: 'application/json' }
-          })
-        });
+        const schema = {
+          type: 'OBJECT',
+          properties: {
+            title: { type: 'STRING' },
+            subject: { type: 'STRING' },
+            questions: {
+              type: 'ARRAY',
+              items: {
+                type: 'OBJECT',
+                properties: {
+                  number: { type: 'STRING' },
+                  type: { type: 'STRING', description: 'choice または written' },
+                  points: { type: 'INTEGER' },
+                  questionText: { type: 'STRING' },
+                  choices: { type: 'ARRAY', items: { type: 'STRING' } },
+                  correctAnswer: { type: 'STRING' },
+                  explanation: { type: 'STRING' },
+                  youtubeSearchKeyword: { type: 'STRING' },
+                  weaknessTag: { type: 'STRING' }
+                },
+                required: ['number', 'type', 'points', 'questionText', 'choices', 'correctAnswer', 'explanation', 'youtubeSearchKeyword', 'weaknessTag']
+              }
+            }
+          },
+          required: ['title', 'subject', 'questions']
+        };
 
-        const data = await res.json();
-        const rawJson = data.candidates[0].content.parts[0].text;
-        state.currentTest = JSON.parse(rawJson);
-        renderExam();
+        const examData = await callGemini(parts, schema);
+        examData.duration = duration;
+        examData.difficultyLabel = difficulty.split('（')[0];
+        examData.modeLabel = examMode.split('（')[0];
+        currentExam = examData;
+
+        renderExam(examData);
         switchTab('exam');
       } catch (err) {
-        alert('問題作成中にエラーが起きました。APIキーや通信環境を確認してね。\n詳細: ' + err.message);
+        alert('問題作成中にエラーが発生しました：\n' + err.message);
       } finally {
         btn.disabled = false;
-        btn.textContent = '白黒テストを作成する';
+        loading.classList.add('hidden');
       }
     }
 
-    function createDemoTest(topicName, count) {
-      const qs = [];
-      for (let i = 1; i <= count; i++) {
-        const isChoice = state.answerType === '選択肢のみ' || (state.answerType.includes('複合') && i % 2 === 1);
-        qs.push({
-          number: i,
-          type: isChoice ? 'choice' : 'text',
-          question: `【${state.format} / ${state.difficulty}】「${topicName}」に関する第${i}問：基本的な仕組みと応用について最も適切なものを答えなさい。`,
-          choices: isChoice ? ['ア. 基本法則がそのまま成り立つ場合', 'イ. 条件が逆転して変化する場合', 'ウ. 例外ルールが適用される場合', 'エ. どの条件にも当てはまらない場合'] : [],
-          answer: isChoice ? 'ア. 基本法則がそのまま成り立つ場合' : '基本法則を整理して条件を当てはめること',
-          explanation: `この問題は「${topicName}」の土台になる大事なポイントだよ！まず問題文のキーワードに線を引いて、どれが原因でどれが結果かを整理するとスッキリ解けるよ。`,
-          diagram: `┌──────────────┐\n│ 1. 問題文の条件を確認 │\n└──────┬───────┘\n       ▼\n┌──────────────┐\n│ 2. 基本ルールに代入   │\n└──────────────┘`,
-          youtubeQuery: `${topicName} 中学生 わかりやすい 解説`
-        });
-      }
-      return { title: `${topicName} 確認テスト（${state.time}分）`, questions: qs };
-    }
-
-    function renderExam() {
-      document.getElementById('exam-empty').classList.add('hidden');
+    function renderExam(exam) {
+      document.getElementById('empty-exam-msg').classList.add('hidden');
       document.getElementById('exam-container').classList.remove('hidden');
-      document.getElementById('result-section').classList.add('hidden');
+      document.getElementById('score-display').textContent = '　　';
 
-      const test = state.currentTest;
-      document.getElementById('sheet-title').textContent = test.title;
-      document.getElementById('exam-meta-label').textContent = `${state.difficulty} / ${state.format}`;
+      document.getElementById('paper-meta').textContent =
+        `教科：${exam.subject} ／ 制限時間：${exam.duration}分 ／ 難易度：${exam.difficultyLabel} ／ 形式：${exam.modeLabel}`;
+      document.getElementById('paper-title').textContent = exam.title;
 
       const qList = document.getElementById('questions-list');
-      const aSheet = document.getElementById('printable-answer-sheet');
+      const aList = document.getElementById('answer-inputs-list');
       qList.innerHTML = '';
-      aSheet.innerHTML = '';
+      aList.innerHTML = '';
 
-      test.questions.forEach((q, idx) => {
-        // 問題用紙側
-        const box = document.createElement('div');
-        box.className = 'question-box';
-        let inputHtml = '';
+      exam.questions.forEach((q, idx) => {
+        const qDiv = document.createElement('div');
+        qDiv.className = 'border-b border-black pb-4';
+        const renderedQ = marked.parse(q.questionText);
+        let choicesHtml = '';
         if (q.type === 'choice' && q.choices && q.choices.length > 0) {
-          inputHtml = q.choices.map(c => `
-            <label class="choice-label">
-              <input type="radio" name="ans_${idx}" value="${c}" />
-              <span>${c}</span>
-            </label>
-          `).join('');
-        } else {
-          inputHtml = `<textarea id="ans_text_${idx}" rows="2" placeholder="ここに解答を入力（印刷する場合は下の解答用紙欄に記入）"></textarea>`;
+          choicesHtml = `<div class="grid sm:grid-cols-2 gap-1.5 mt-2 pl-2 font-sans text-xs">
+            ${q.choices.map(c => `<div class="border border-black px-2.5 py-1">${escapeHtml(c)}</div>`).join('')}
+          </div>`;
         }
-        box.innerHTML = `
-          <div class="question-header">
-            <span>第 ${q.number} 問</span>
-            <span>[${q.type === 'choice' ? '選択' : '記述'}]</span>
+        qDiv.innerHTML = `
+          <div class="flex justify-between items-baseline mb-1">
+            <span class="font-black text-base">${escapeHtml(q.number)}</span>
+            <span class="text-xs font-bold">[配点 ${q.points}点]</span>
           </div>
-          <p>${q.question}</p>
-          <div class="no-print">${inputHtml}</div>
+          <div class="md-content">${renderedQ}</div>
+          ${choicesHtml}
         `;
-        qList.appendChild(box);
+        qList.appendChild(qDiv);
 
-        // 印刷用解答用紙側
-        const ansRow = document.createElement('div');
-        ansRow.style.border = '1px solid #000';
-        ansRow.style.padding = '10px';
-        ansRow.style.marginBottom = '8px';
-        ansRow.innerHTML = `<strong>問${q.number}：</strong> ${q.type === 'choice' ? '（　　　）' : '<br><br>'}`;
-        aSheet.appendChild(ansRow);
-      });
-
-      startTimer(parseInt(state.time, 10) * 60);
-    }
-
-    function startTimer(seconds) {
-      if (state.timerId) clearInterval(state.timerId);
-      state.remainingSeconds = seconds;
-      updateTimerText();
-      state.timerId = setInterval(() => {
-        state.remainingSeconds--;
-        updateTimerText();
-        if (state.remainingSeconds <= 0) {
-          clearInterval(state.timerId);
-          alert('制限時間終了！答え合わせをしよう。');
-        }
-      }, 1000);
-    }
-
-    function updateTimerText() {
-      const m = Math.floor(Math.max(0, state.remainingSeconds) / 60);
-      const s = Math.max(0, state.remainingSeconds) % 60;
-      document.getElementById('timer-display').textContent = `残り ${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-    }
-
-    // 印刷モード切替
-    function printSheet(mode) {
-      document.body.classList.remove('print-mode-exam', 'print-mode-answer', 'print-mode-explanation');
-      document.body.classList.add('print-mode-' + mode);
-      window.print();
-    }
-
-    function downloadTestText() {
-      if (!state.currentTest) return;
-      let txt = `【${state.currentTest.title}】\n\n`;
-      state.currentTest.questions.forEach(q => {
-        txt += `問${q.number}. ${q.question}\n`;
-        if (q.choices) txt += q.choices.join(' / ') + '\n';
-        txt += `【模範解答】${q.answer}\n【解説】${q.explanation}\n\n`;
-      });
-      const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'monochrome_test.txt';
-      a.click();
-    }
-
-    // ① 画面直接入力採点
-    function gradeDirectAnswers() {
-      const test = state.currentTest;
-      const results = test.questions.map((q, idx) => {
-        let userAns = '';
-        if (q.type === 'choice') {
-          const checked = document.querySelector(`input[name="ans_${idx}"]:checked`);
-          userAns = checked ? checked.value : '（未解答）';
+        const aDiv = document.createElement('div');
+        aDiv.className = 'border border-black p-2.5 flex flex-col sm:flex-row sm:items-center gap-2';
+        let inputControl = '';
+        if (q.type === 'choice' && q.choices && q.choices.length > 0) {
+          inputControl = `
+            <select id="ans-input-${idx}" class="w-full border border-black p-1.5 text-sm bg-white font-bold">
+              <option value="">（選択肢を選んでください／手書き用空欄）</option>
+              ${q.choices.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('')}
+            </select>
+          `;
         } else {
-          userAns = document.getElementById(`ans_text_${idx}`).value.trim() || '（未解答）';
+          inputControl = `
+            <input type="text" id="ans-input-${idx}" placeholder="ここに解答を入力（印刷時は手書き欄）"
+              class="w-full border-b border-black p-1.5 text-sm focus:outline-none bg-transparent" />
+          `;
         }
-        const isCorrect = userAns !== '（未解答）' && (userAns === q.answer || q.answer.includes(userAns) || userAns.includes(q.answer));
-        return { ...q, userAns, isCorrect };
+
+        aDiv.innerHTML = `
+          <div class="w-24 shrink-0 font-black text-sm border-r border-black pr-2">${escapeHtml(q.number)}</div>
+          <div class="flex-1">${inputControl}</div>
+          <div class="w-16 shrink-0 text-right text-xs font-bold">(${q.points}点)</div>
+        `;
+        aList.appendChild(aDiv);
       });
-      finalizeGrading(results);
     }
 
-    // ② 手書き解答写真採点
-    async function gradePhotoAnswers() {
-      const files = Array.from(document.getElementById('handwritten-input').files);
-      if (files.length === 0) {
-        alert('解答を書いた写真を選んでね！');
+    async function gradeFromInput() {
+      if (!currentExam) return;
+      const userAnswers = currentExam.questions.map((q, idx) => ({
+        number: q.number,
+        questionText: q.questionText,
+        correctAnswer: q.correctAnswer,
+        points: q.points,
+        userAnswer: (document.getElementById(`ans-input-${idx}`)?.value || '').trim() || '（無回答）'
+      }));
+      await executeGrading(userAnswers, null);
+    }
+
+    async function gradeFromPhoto() {
+      if (!currentExam) return;
+      const fileInput = document.getElementById('handwritten-image');
+      if (!fileInput.files || fileInput.files.length === 0) {
+        alert('解答を書いた用紙の写真を先に選択してください。');
         return;
       }
-      const apiKey = document.getElementById('api-key-input').value.trim();
-      if (!apiKey) {
-        alert('手書き写真の読み取り採点には、上の「Gemini APIキー」の入力が必要です！');
-        return;
-      }
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = async e => {
+        const base64 = e.target.result.split(',')[1];
+        const photoObj = { mimeType: file.type, data: base64 };
+        const questionMeta = currentExam.questions.map(q => ({
+          number: q.number,
+          questionText: q.questionText,
+          correctAnswer: q.correctAnswer,
+          points: q.points
+        }));
+        await executeGrading(questionMeta, photoObj);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function executeGrading(dataPayload, photoObj) {
+      const loading = document.getElementById('grading-loading');
+      const btnA = document.getElementById('grade-input-btn');
+      const btnB = document.getElementById('grade-photo-btn');
+      loading.classList.remove('hidden');
+      btnA.disabled = true;
+      btnB.disabled = true;
 
       try {
-        const parts = [{
-          text: `添付された手書き解答の写真を読み取り、以下の問題リストの模範解答と照らし合わせて採点し、JSONのみで返してください。
-問題リスト: ${JSON.stringify(state.currentTest.questions.map(q => ({ number: q.number, question: q.question, answer: q.answer })))}
-出力JSON形式: {"graded": [{"number": 1, "userAns": "読み取った解答", "isCorrect": true}]}`
-        }];
+        const currentProfile = getWeaknessProfile();
+        const prompt = `
+あなたは中学生に教えるのが非常に上手な個別指導の先生です。
+以下の試験問題と解答データ（${photoObj ? '添付された手書き解答用紙の写真から読み取った解答' : '受験者が入力した解答'}）を厳密に採点してください。
 
-        for (const f of files) {
-          const dataUrl = await new Promise(r => {
-            const reader = new FileReader();
-            reader.onload = e => r(e.target.result);
-            reader.readAsDataURL(f);
-          });
-          parts.push({
-            inline_data: {
-              mime_type: dataUrl.split(';')[0].split(':')[1],
-              data: dataUrl.split(',')[1]
+【問題と模範解答】
+${JSON.stringify(dataPayload, null, 2)}
+
+【これまでの受験者の弱点傾向】
+${currentProfile.summary || '初回受験'}
+
+【採点・コメントのルール】
+1. 記述問題は意味が合っていれば部分点や正解を認めること。
+2. coachComment には、今回の解答全体から見えた「間違えやすいポイントや癖」と「次へのアドバイス」を、中学生に話しかけるような端的な口調で書くこと。
+3. updatedWeaknessSummary には、これまでの弱点傾向に今回の結果を統合した最新の弱点分析を100文字以内でまとめること。
+`;
+
+        const parts = [{ text: prompt }];
+        if (photoObj) {
+          parts.push({ inlineData: { mimeType: photoObj.mimeType, data: photoObj.data } });
+        }
+
+        const schema = {
+          type: 'OBJECT',
+          properties: {
+            totalScore: { type: 'INTEGER' },
+            coachComment: { type: 'STRING' },
+            updatedWeaknessSummary: { type: 'STRING' },
+            results: {
+              type: 'ARRAY',
+              items: {
+                type: 'OBJECT',
+                properties: {
+                  number: { type: 'STRING' },
+                  extractedUserAnswer: { type: 'STRING' },
+                  isCorrect: { type: 'BOOLEAN' },
+                  earnedPoints: { type: 'INTEGER' },
+                  onePointAdvice: { type: 'STRING' }
+                },
+                required: ['number', 'extractedUserAnswer', 'isCorrect', 'earnedPoints', 'onePointAdvice']
+              }
             }
-          });
-        }
+          },
+          required: ['totalScore', 'coachComment', 'updatedWeaknessSummary', 'results']
+        };
 
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts }],
-            generationConfig: { responseMimeType: 'application/json' }
-          })
-        });
+        const gradeData = await callGemini(parts, schema);
+        currentGradingResult = gradeData;
 
-        const data = await res.json();
-        const parsed = JSON.parse(data.candidates[0].content.parts[0].text);
-        const results = state.currentTest.questions.map(q => {
-          const g = parsed.graded.find(item => item.number === q.number) || { userAns: '読み取り不可', isCorrect: false };
-          return { ...q, userAns: g.userAns, isCorrect: g.isCorrect };
-        });
-        finalizeGrading(results);
+        document.getElementById('score-display').textContent = gradeData.totalScore;
+        saveWrongQuestionsAndProfile(gradeData);
+        renderExplanations(gradeData);
+        switchTab('explain');
       } catch (err) {
-        alert('写真採点エラー: ' + err.message);
+        alert('採点中にエラーが発生しました：\n' + err.message);
+      } finally {
+        loading.classList.add('hidden');
+        btnA.disabled = false;
+        btnB.disabled = false;
       }
     }
 
-    function finalizeGrading(results) {
-      if (state.timerId) clearInterval(state.timerId);
-      const correctCount = results.filter(r => r.isCorrect).length;
-      const score = Math.round((correctCount / results.length) * 100);
+    function saveWrongQuestionsAndProfile(gradeData) {
+      const reviews = getReviews();
+      const profile = getWeaknessProfile();
 
-      document.getElementById('result-section').classList.remove('hidden');
-      document.getElementById('total-score-badge').textContent = `得点: ${score}点（${correctCount}/${results.length}問）`;
-
-      // AIコーチの端的な中学生向けコメント
-      const commentBox = document.getElementById('ai-coach-comment');
-      if (score === 100) {
-        commentBox.innerHTML = `<strong>【AI先生からの一言】</strong><br>満点すごい！基本も応用もバッチリ身についてるね。次は難易度を1つ上げて挑戦してみよう！`;
-      } else if (score >= 60) {
-        commentBox.innerHTML = `<strong>【AI先生からの一言】</strong><br>いい調子！あと一歩で満点だよ。間違えた問題は「問題文の条件の読み落とし」が多いから、キーワードに丸をつける癖をつけよう！`;
-      } else {
-        commentBox.innerHTML = `<strong>【AI先生からの一言】</strong><br>まずはお疲れさま！焦らなくて大丈夫。下の図表を見ながら「なぜこの答えになるのか」を1問ずつ声に出して確認してみよう！`;
-      }
-
-      // 解説描画＆間違えた問題を振り返りへ保存
-      const expList = document.getElementById('explanations-list');
-      expList.innerHTML = '';
-      const reviews = JSON.parse(localStorage.getItem('mono_exam_reviews') || '[]');
-
-      results.forEach(r => {
-        if (!r.isCorrect) {
+      gradeData.results.forEach((res, idx) => {
+        const q = currentExam.questions[idx];
+        if (!q) return;
+        if (!res.isCorrect) {
           reviews.unshift({
-            id: Date.now() + Math.random(),
-            topic: state.currentTest.title,
-            question: r.question,
-            answer: r.answer,
-            explanation: r.explanation,
-            diagram: r.diagram
+            id: Date.now() + '-' + idx,
+            date: new Date().toLocaleDateString('ja-JP'),
+            title: currentExam.title,
+            number: q.number,
+            questionText: q.questionText,
+            choices: q.choices || [],
+            userAnswer: res.extractedUserAnswer,
+            correctAnswer: q.correctAnswer,
+            explanation: q.explanation,
+            youtubeSearchKeyword: q.youtubeSearchKeyword
           });
+          if (q.weaknessTag) {
+            profile.history.push(q.weaknessTag);
+          }
         }
-        const ytUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(r.youtubeQuery || r.question.slice(0, 15))}`;
-        const div = document.createElement('div');
-        div.className = 'explanation-box';
-        div.innerHTML = `
-          <div class="judge-mark">${r.isCorrect ? '◎ 正解' : '× 不正解'}（問${r.number}）</div>
-          <p><strong>あなたの解答：</strong>${r.userAns}<br><strong>模範解答：</strong>${r.answer}</p>
-          <p><strong>【中学生向け解説】</strong><br>${r.explanation}</p>
-          <div class="diagram-box">${r.diagram || ''}</div>
-          <a href="${ytUrl}" target="_blank" style="color:#000; font-weight:bold;">▶ YouTubeで解説動画を探す</a>
-        `;
-        expList.appendChild(div);
       });
 
-      localStorage.setItem('mono_exam_reviews', JSON.stringify(reviews.slice(0, 50)));
-
-      // 履歴保存（分析は常に実行）
-      const history = JSON.parse(localStorage.getItem('mono_exam_history') || '[]');
-      history.push({
-        date: new Date().toLocaleDateString('ja-JP'),
-        topic: document.getElementById('topic-input').value.trim() || '画像範囲',
-        score,
-        wrongCount: results.length - correctCount
-      });
-      localStorage.setItem('mono_exam_history', JSON.stringify(history));
-      document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
+      profile.summary = gradeData.updatedWeaknessSummary;
+      localStorage.setItem(STORAGE_KEY_REVIEWS, JSON.stringify(reviews.slice(0, 100)));
+      localStorage.setItem(STORAGE_KEY_WEAKNESS, JSON.stringify(profile));
+      updateReviewUI();
+      updateWeaknessUI();
     }
 
-    function renderReviewList() {
-      const reviews = JSON.parse(localStorage.getItem('mono_exam_reviews') || '[]');
-      const container = document.getElementById('review-list');
+    function renderExplanations(gradeData) {
+      document.getElementById('empty-explain-msg').classList.add('hidden');
+      document.getElementById('explain-container').classList.remove('hidden');
+
+      document.getElementById('result-score-badge').textContent = `得点：${gradeData.totalScore} / 100点`;
+      document.getElementById('ai-coach-comment').textContent = gradeData.coachComment;
+
+      const list = document.getElementById('question-explanations-list');
+      list.innerHTML = '';
+
+      currentExam.questions.forEach((q, idx) => {
+        const r = gradeData.results[idx] || { isCorrect: false, extractedUserAnswer: '-', earnedPoints: 0, onePointAdvice: '' };
+        const ytUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(q.youtubeSearchKeyword + ' 授業 解説')}`;
+
+        const card = document.createElement('div');
+        card.className = 'border-2 border-black p-4';
+        card.innerHTML = `
+          <div class="flex flex-wrap justify-between items-center border-b-2 border-black pb-2 mb-3 gap-2">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 text-xs font-black ${r.isCorrect ? 'bg-white border border-black' : 'bg-black text-white'}">
+                ${r.isCorrect ? '〇 正解' : '× 不正解（振り返り帳へ登録）'}
+              </span>
+              <span class="font-black text-base">${escapeHtml(q.number)}</span>
+            </div>
+            <span class="text-xs font-black">得点：${r.earnedPoints} / ${q.points}点</span>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-2 text-xs mb-3">
+            <div class="border border-black p-2">
+              <span class="font-bold">あなたの解答：</span>${escapeHtml(r.extractedUserAnswer)}
+            </div>
+            <div class="border border-black p-2 bg-neutral-100">
+              <span class="font-bold">模範解答：</span>${escapeHtml(q.correctAnswer)}
+            </div>
+          </div>
+
+          <div class="border border-black p-2.5 mb-3 text-xs bg-neutral-50">
+            <span class="font-black">【先生のひとこと】</span> ${escapeHtml(r.onePointAdvice)}
+          </div>
+
+          <div class="mb-3">
+            <div class="text-xs font-black mb-1">■ 中学生にもわかる図表・ステップ解説</div>
+            <div class="md-content text-sm leading-relaxed border-t border-black pt-2">
+              ${marked.parse(q.explanation)}
+            </div>
+          </div>
+
+          <div class="text-xs pt-2 border-t border-black flex flex-wrap justify-between items-center gap-2">
+            <span>▶ 参考解説動画（YouTube検索）：</span>
+            <a href="${ytUrl}" target="_blank" rel="noopener noreferrer" class="underline font-bold">
+              「${escapeHtml(q.youtubeSearchKeyword)}」の解説動画を見る ↗
+            </a>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function getReviews() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY_REVIEWS)) || []; } catch { return []; }
+    }
+
+    function updateReviewUI() {
+      const reviews = getReviews();
+      document.getElementById('review-count').textContent = reviews.length;
+      const list = document.getElementById('review-list');
       if (reviews.length === 0) {
-        container.innerHTML = '<p>現在、復習待ちの間違えた問題はありません！</p>';
+        list.innerHTML = '<div class="text-xs p-6 text-center border border-black">現在、復習待ちの問題はありません。</div>';
         return;
       }
-      container.innerHTML = reviews.map((item, idx) => `
-        <div class="question-box">
-          <div class="question-header">
-            <span>${item.topic}</span>
-            <button class="btn-secondary" onclick="deleteReviewItem(${idx})">習得済（削除）</button>
+
+      list.innerHTML = reviews.map(item => {
+        const ytUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(item.youtubeSearchKeyword + ' 授業 解説')}`;
+        return `
+          <div class="border-2 border-black p-4">
+            <div class="flex flex-wrap justify-between items-center border-b border-black pb-2 mb-2 gap-2">
+              <div class="text-xs font-black">
+                [${escapeHtml(item.date)}] ${escapeHtml(item.title)} － ${escapeHtml(item.number)}
+              </div>
+              <button onclick="deleteReview('${item.id}')" class="mono-btn px-2.5 py-1 text-xs">
+                ✓ 理解できたので削除
+              </button>
+            </div>
+            <div class="md-content text-sm mb-3">${marked.parse(item.questionText)}</div>
+            <details class="border border-black p-2.5 bg-neutral-50">
+              <summary class="text-xs font-black cursor-pointer select-none">▶ 答えと中学生向け図表解説を開く</summary>
+              <div class="mt-2 pt-2 border-t border-black text-xs space-y-2">
+                <div><strong>前回の誤答：</strong>${escapeHtml(item.userAnswer)} ／ <strong>正解：</strong>${escapeHtml(item.correctAnswer)}</div>
+                <div class="md-content text-sm">${marked.parse(item.explanation)}</div>
+                <div><a href="${ytUrl}" target="_blank" rel="noopener noreferrer" class="underline font-bold">▶ YouTube解説動画を見る ↗</a></div>
+              </div>
+            </details>
           </div>
-          <p><strong>問題：</strong>${item.question}</p>
-          <p><strong>答え：</strong>${item.answer}</p>
-          <p style="font-size:0.9rem;">${item.explanation}</p>
-          <div class="diagram-box">${item.diagram || ''}</div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
-    function deleteReviewItem(idx) {
-      const reviews = JSON.parse(localStorage.getItem('mono_exam_reviews') || '[]');
-      reviews.splice(idx, 1);
-      localStorage.setItem('mono_exam_reviews', JSON.stringify(reviews));
-      renderReviewList();
+    function deleteReview(id) {
+      const updated = getReviews().filter(r => r.id !== id);
+      localStorage.setItem(STORAGE_KEY_REVIEWS, JSON.stringify(updated));
+      updateReviewUI();
     }
 
     function clearAllReviews() {
-      if (confirm('振り返りリストをすべて削除しますか？')) {
-        localStorage.removeItem('mono_exam_reviews');
-        renderReviewList();
-      }
+      if (!confirm('振り返り帳の履歴をすべて削除しますか？')) return;
+      localStorage.removeItem(STORAGE_KEY_REVIEWS);
+      updateReviewUI();
     }
 
-    function renderAnalysis() {
-      const history = JSON.parse(localStorage.getItem('mono_exam_history') || '[]');
-      const box = document.getElementById('analysis-summary');
-      if (history.length === 0) {
-        box.innerHTML = '<p>まだ採点データがありません。テストを1回解くと、ここにあなたの得意・苦手傾向が分析されます！</p>';
-        return;
+    function downloadTextData(type) {
+      if (!currentExam) return;
+      let content = `========================================\n${currentExam.title}\n教科：${currentExam.subject} / 時間：${currentExam.duration}分 / 難易度：${currentExam.difficultyLabel}\n========================================\n\n`;
+      if (type === 'exam') {
+        currentExam.questions.forEach(q => {
+          content += `${q.number}（${q.points}点）\n${q.questionText}\n`;
+          if (q.choices?.length) content += q.choices.join('   ') + '\n';
+          content += `\n----------------------------------------\n`;
+        });
+      } else {
+        if (currentGradingResult) {
+          content += `得点：${currentGradingResult.totalScore} / 100点\nAI先生アドバイス：${currentGradingResult.coachComment}\n\n`;
+        }
+        currentExam.questions.forEach(q => {
+          content += `${q.number} 模範解答：${q.correctAnswer}\n【解説】\n${q.explanation}\nYouTube検索：https://www.youtube.com/results?search_query=${encodeURIComponent(q.youtubeSearchKeyword)}\n\n========================================\n`;
+        });
       }
-      const avg = Math.round(history.reduce((s, h) => s + h.score, 0) / history.length);
-      box.innerHTML = `
-        <p><strong>累計受験回数：</strong>${history.length}回 ／ <strong>平均正答率：</strong>${avg}%</p>
-        <div style="border:2px solid #000; padding:10px; margin-bottom:14px; background:#f5f5f5;">
-          <strong>AIの癖・傾向アドバイス：</strong><br>
-          ${avg >= 80 ? 'ケアレスミスが少なく安定しています！「難関」モードでひっかけ問題に慣れるとさらに伸びます。' : '後半の問題や記述問題で得点を取りこぼす傾向があります。まずは「簡単〜普通」で基礎用語を完璧にしよう！'}
-        </div>
-        ${history.slice().reverse().map(h => `
-          <div style="margin-bottom:10px;">
-            <div>${h.date} - ${h.topic}（${h.score}点）</div>
-            <div class="stat-bar-bg"><div class="stat-bar-fill" style="width:${h.score}%"></div></div>
-          </div>
-        `).join('')}
-      `;
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${currentExam.title}_${type === 'exam' ? '問題用紙' : '解答解説'}.txt`;
+      a.click();
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
     }
   </script>
 </body>
