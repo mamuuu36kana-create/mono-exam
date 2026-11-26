@@ -1,304 +1,364 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>テストメーカー</title>
-<meta name="theme-color" content="#ffffff">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="テストメーカー">
-<link rel="icon" id="fi"><link rel="apple-touch-icon" id="ai"><link rel="manifest" id="mf">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;900&display=swap">
-<style id="css">
-*{box-sizing:border-box}
-body{margin:0;background:#fff;color:#000;font:15px/1.7 "Noto Sans JP",system-ui,sans-serif}
-header{border-bottom:3px solid #000;padding:calc(12px + env(safe-area-inset-top)) 16px 0;position:sticky;top:0;background:#fff;z-index:5}
-h1{margin:0 0 6px;font:900 26px "Noto Serif JP",serif;letter-spacing:.1em}
-nav{display:flex}
-nav button{flex:1;border:0;background:none;padding:10px 0;font:inherit;font-weight:700;border-bottom:4px solid transparent;cursor:pointer;border-radius:0}
-nav button.on{border-bottom-color:#000}
-main{max-width:860px;margin:0 auto;padding:16px 16px 80px}
-h2{font:900 17px "Noto Serif JP",serif;border-left:6px solid #000;padding-left:8px;margin:26px 0 10px}
-h3{font:900 16px "Noto Serif JP",serif;border-bottom:1px solid #000;margin:20px 0 6px}
-input[type=text],input[type=password],textarea{width:100%;border:2px solid #000;padding:9px;font:inherit;background:#fff;border-radius:0;color:#000}
-label{display:block;font-weight:700;margin:10px 0 4px}
-.ch{display:inline-block;position:relative;margin:0 6px 6px 0}
-.ch input{position:absolute;opacity:0}
-.ch span{display:inline-block;border:2px solid #000;padding:7px 12px;cursor:pointer;font-weight:700}
-.ch input:checked+span{background:#000;color:#fff}
-.ch input:focus-visible+span,button:focus-visible,input:focus-visible{outline:3px solid #000;outline-offset:2px}
-button{font:inherit;border:2px solid #000;background:#fff;color:#000;padding:8px 14px;font-weight:700;cursor:pointer;border-radius:0}
-button.pri{background:#000;color:#fff;padding:12px 22px;margin-top:18px}
-button:disabled{opacity:.4}
-.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
-.fill{flex:1}
-.sheet{border:2px solid #000;padding:22px;margin:12px 0;font:15px/1.9 "Noto Serif JP","Yu Mincho",serif;background:#fff}
-.hd{border-bottom:2px solid #000;margin-bottom:14px;padding-bottom:8px}
-.tt{font-size:20px;font-weight:900}
-.ln{display:inline-block;width:8em;border-bottom:1px solid #000}
-.q{margin:14px 0;break-inside:avoid}
-.qn{font-weight:900}.qn small{font-weight:400}
-.cs{list-style:none;padding-left:1.5em;margin:4px 0}
-table{border-collapse:collapse;margin:6px 0}
-td,th{border:1px solid #000;padding:3px 10px}
-.fig{filter:grayscale(1);margin:6px 0}
-.fig svg{max-width:100%;height:auto;max-height:320px}
-.box{height:3.4em;min-width:12em}
-.wk{height:5em}
-.ov{border-top:1px solid #000}
-sup,sub{font-size:.7em;line-height:0}
-.ar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;border-bottom:1px solid #000;padding:6px 0}
-.ar b{width:3.5em}
-.ar .tx{flex:1;min-width:180px;width:auto}
-.rr{display:flex;gap:10px;border-bottom:1px solid #000;padding:8px 0;align-items:center}
-.mk{font-size:22px;width:48px;height:48px;padding:0;border-radius:50%;flex:none}
-.cm{border:2px solid #000;padding:12px;margin-top:14px}
-.em,.sm{color:#444;font-size:13px}
-.thumb{display:inline-block;margin:4px;text-align:center}
-.thumb img{height:80px;border:2px solid #000;filter:grayscale(1);display:block}
-.url{display:none;font-size:11px}
-#printroot{display:none}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#000000">
+<title>MONO-TEST STUDIO</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%23000'/><rect x='6' y='6' width='52' height='52' fill='none' stroke='%23fff' stroke-width='3'/><text x='32' y='44' font-size='32' font-family='serif' font-weight='bold' fill='%23fff' text-anchor='middle'>試</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%23000'/><rect x='14' y='14' width='152' height='152' fill='none' stroke='%23fff' stroke-width='8'/><text x='90' y='122' font-size='88' font-family='serif' font-weight='bold' fill='%23fff' text-anchor='middle'>試</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+:root{--b:#000;--w:#fff;--g:#666;--l:#eee;--f:"Hiragino Mincho ProN","Yu Mincho",serif;--s:system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;color:var(--b)}
+body{background:var(--w);font:14px/1.6 var(--s);max-width:920px;margin:auto;padding:12px}
+header,nav,.box,.q-card,.flow-step{border:1.5px solid var(--b);margin-bottom:10px;padding:10px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;border-width:2px}
+h1{font:700 18px/1 var(--f);letter-spacing:.12em}
+nav{display:flex;flex-wrap:wrap;gap:4px;padding:6px;background:var(--l)}
+button,select,input,textarea{font:inherit;border:1px solid var(--b);background:var(--w);padding:6px 10px}
+button{cursor:pointer;font-weight:700}
+button.on,button.pri{background:var(--b);color:var(--w)}
+button:disabled{opacity:.4;cursor:not-allowed}
+input[type=text],input[type=password],textarea,select{width:100%}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.paper{font-family:var(--f);border:2px solid var(--b);padding:20px}
+.paper-hd{border-bottom:2px double var(--b);padding-bottom:8px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-end}
+.opt{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--b);padding:5px 10px;margin:4px 6px 4px 0;text-align:left}
+.opt *{pointer-events:none}
+.opt.sel{background:var(--b);color:var(--w)}
+.opt.sel *{color:var(--w)}
+.sheet-row{display:grid;grid-template-columns:56px 1fr;border:1px solid var(--b);margin-bottom:-1px}
+.sheet-row>div{padding:8px;border-right:1px solid var(--b)}
+.sheet-row>div:last-child{border-right:0}
+.mark{font:700 20px/1 var(--f);border:2px solid var(--b);padding:2px 8px;display:inline-block}
+.flow{border-left:2px solid var(--b);margin:8px 0 8px 10px;padding-left:12px}
+.flow-step{position:relative;margin-bottom:8px;padding:8px}
+.flow-step::before{content:"";position:absolute;left:-18px;top:12px;width:10px;height:10px;background:var(--b)}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px}
+th,td{border:1px solid var(--b);padding:5px 8px;text-align:left}
+th{background:var(--l)}
+.svg-box{border:1px solid var(--b);padding:8px;margin:8px 0;text-align:center;overflow-x:auto}
+.svg-box svg{max-width:100%;height:auto;filter:grayscale(100%)}
+.thumbs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.thumbs img{height:56px;border:1px solid var(--b);filter:grayscale(100%)}
+.tag{font-size:11px;border:1px solid var(--b);padding:1px 6px;display:inline-block}
+.muted{color:var(--g);font-size:12px}
+#status{padding:6px 10px;border:1px solid var(--b);background:var(--l);margin-bottom:10px;display:none}
 @media print{
- body>*:not(#printroot){display:none!important}
- #printroot{display:block!important}
- .sheet{border:0;padding:0;margin:0}
- .url{display:inline}
- @page{size:A4;margin:14mm}
+  body{max-width:none;padding:0}
+  .no-print,header,nav,#status{display:none!important}
+  .paper,.box,.q-card{break-inside:avoid;border-color:#000}
 }
 </style>
 </head>
 <body>
-<div id="app">
-<header><h1>テストメーカー</h1>
-<nav>
-<button data-a="go" data-v="make" class="on">つくる</button>
-<button data-a="go" data-v="test">テスト</button>
-<button data-a="go" data-v="rev">振り返り</button>
-<button data-a="go" data-v="set">設定</button>
-</nav></header>
-<main>
-<section class="v" id="make">
-<h2>範囲</h2>
-<label for="unit">単元名・範囲（写真だけでも可）</label>
-<input type="text" id="unit" placeholder="例：二次関数の最大・最小／関ヶ原の戦い">
-<label for="photos">写真（複数可・単元名と併用できます）</label>
-<input type="file" id="photos" accept="image/*" multiple>
-<div id="thumbs"></div>
-<h2>難易度</h2>
-<div id="c-diff"></div>
-<label for="dx">難易度の追加指示（任意）</label>
-<input type="text" id="dx" placeholder="例：計算量は少なめ、証明問題を入れて">
-<h2>制限時間</h2><div id="c-time"></div>
-<h2>問題形式</h2><div id="c-fmt"></div>
-<h2>解答方法</h2><div id="c-am"></div>
-<h2>出題の傾向</h2>
-<label class="ch"><input type="checkbox" id="weak" checked><span>間違えやすい分野を多めに出す</span></label>
-<p class="sm">分析はON/OFFに関係なく、採点を確定するたびに続きます。</p>
-<button class="pri" id="gen" data-a="gen">テストを作成</button>
-<p id="msg"></p>
-</section>
-<section class="v" id="test" hidden></section>
-<section class="v" id="rev" hidden></section>
-<section class="v" id="set" hidden>
-<h2>AI設定</h2>
-<p class="sm">問題作成・写真の採点・コメントにAnthropic APIを使います。キーはこの端末のブラウザ内にだけ保存されます。共用の端末では入力しないでください。</p>
-<label for="key">APIキー</label><input type="password" id="key" autocomplete="off">
-<label for="model">モデル名</label><input type="text" id="model">
-<div class="bar"><button data-a="saveset">保存</button></div>
-<h2>データ</h2>
-<div class="bar"><button data-a="loadj">保存したテスト(JSON)を開く</button><button data-a="reset">すべて消去</button></div>
-<input type="file" id="lj" accept=".json" hidden>
-</section>
-</main>
-</div>
-<div id="printroot"></div>
+<header>
+  <h1>MONO-TEST STUDIO</h1>
+  <div class="row">
+    <input id="apiKey" type="password" placeholder="Gemini API Key" style="width:210px">
+    <span id="timer" class="tag">--:--</span>
+    <button data-act="toggleTimer">タイマー</button>
+  </div>
+</header>
+<nav id="nav"></nav>
+<div id="status"></div>
+<main id="app"></main>
+
 <script>
-const $=s=>document.querySelector(s);
-const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
-const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){alert('端末の保存容量が足りません。振り返りを整理してください。')}};
-let S=ld('tm',{key:'',model:'claude-sonnet-5-5',stats:{},mis:[]}),cur=ld('tmc',null),imgs=[],sub='q',tm=null,left=0;
-const save=()=>{sv('tm',S);sv('tmc',cur)};
-const MK='①②③④⑤⑥';
-const DL={easy:'簡単',normal:'普通',hard:'難関'},FL={basic:'基本',mock:'模試',kyotsu:'共通テスト',data:'データ'},AL={c:'選択肢のみ',w:'記述のみ',m:'複合'};
-const DF={easy:'簡単：学校の定期テスト水準。基本問題と応用問題を含み、基本を理解できているか、それを活用できるかを確認する。',normal:'普通：大学入試レベル。これが解ければ受験の武器になる水準。',hard:'難関：とにかく難しく。考えられる限り難度を上げる（最難関大の最難問級、思考力・複合・発想力）。'};
-const FM={basic:'基本：標準的なテスト形式。',mock:'模試：大問(1,2,3…)に分け、各大問に小問を並べ、配点をつける。大問の見出しを、各大問の最初の問のsectionに入れる。実際の模試のような構成。',kyotsu:'共通テスト：マーク式中心。会話文・資料・グラフ・表の読み取りと思考力を問う。選択肢は4〜5個。大問の見出しを各大問の最初の問のsectionに入れる。',data:'データ：添付した写真・データと同じ形式・レイアウト・出題スタイルで、数値や題材を変えた類題。'};
-const AM={w:'記述のみ（全問type:"write"。答えは短い語句・数値・式）',c:'選択肢のみ（全問type:"choice"）',m:'複合（writeとchoiceの両方を含める）'};
-const chip=(n,a,d)=>a.map(([v,l])=>`<label class="ch"><input type="radio" name="${n}" value="${v}" ${v==d?'checked':''}><span>${l}</span></label>`).join('');
-const val=n=>document.querySelector(`input[name=${n}]:checked`).value;
-$('#c-diff').innerHTML=chip('diff',Object.entries(DL),'easy');
-$('#c-time').innerHTML=chip('time',[[10,'10分'],[30,'30分'],[50,'50分'],[90,'1時間30分']],30);
-$('#c-fmt').innerHTML=chip('fmt',[['basic','基本'],['mock','模試モード'],['kyotsu','共通テストモード'],['data','データモード']],'basic');
-$('#c-am').innerHTML=chip('am',[['m','複合（標準）'],['c','選択肢のみ'],['w','記述のみ']],'m');
-
-// ---------- 表示用整形（x^2 → x²、平方根、不等号など） ----------
-const fmt=s=>esc(s).replace(/\*\*/g,'').replace(/\^\{([^}]+)\}|\^([-+]?\w+)/g,(m,a,b)=>`<sup>${a||b}</sup>`)
- .replace(/_\{([^}]+)\}|_(\w)/g,(m,a,b)=>`<sub>${a||b}</sub>`)
- .replace(/sqrt\(([^()]+)\)/g,'√<span class="ov">$1</span>')
- .replace(/&lt;=/g,'≤').replace(/&gt;=/g,'≥').replace(/!=/g,'≠').replace(/-&gt;/g,'→').replace(/\*/g,'×').replace(/\n/g,'<br>');
-const tbl=r=>Array.isArray(r)&&r.length?`<table>${r.map(x=>'<tr>'+x.map(c=>`<td>${fmt(c)}</td>`).join('')+'</tr>').join('')}</table>`:'';
-const fig=s=>{s=String(s||'').trim();if(!/^<svg/i.test(s))return'';return`<div class="fig">${s.replace(/<script[\s\S]*?<\/script>/gi,'').replace(/\son\w+\s*=\s*("[^"]*"|'[^']*')/gi,'')}</div>`};
-const yt=q=>{if(!q.video)return'';const u='https://www.youtube.com/results?search_query='+encodeURIComponent(q.video);return`<div class="sm">解説動画：<a href="${u}" target="_blank" rel="noopener" style="color:#000">YouTubeで「${esc(q.video)}」を探す</a> <span class="url">${u}</span></div>`};
-
-// ---------- AI ----------
-async function ai(content,system,max=12000){
- if(!S.key)throw new Error('「設定」でAPIキーを入力してください');
- const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':S.key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:S.model,max_tokens:max,system,messages:[{role:'user',content}]})});
- const j=await r.json();if(!r.ok)throw new Error(j.error?.message||r.status);
- return j.content.filter(b=>b.type==='text').map(b=>b.text).join('');
-}
-const J=t=>JSON.parse(t.slice(t.indexOf('{'),t.lastIndexOf('}')+1));
-const rd=f=>new Promise(r=>{const i=new Image();i.onload=()=>{const s=Math.min(1,1400/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*s;c.height=i.height*s;c.getContext('2d').drawImage(i,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',.8))};i.src=URL.createObjectURL(f)});
-const img=u=>({type:'image',source:{type:'base64',media_type:'image/jpeg',data:u.split(',')[1]}});
-const msg=t=>$('#msg').textContent=t;
-const thumbs=()=>$('#thumbs').innerHTML=imgs.map((u,i)=>`<div class="thumb"><img src="${u}" alt="写真${i+1}"><button data-a="rm" data-i="${i}">削除</button></div>`).join('');
-
-// ---------- 作成 ----------
-async function gen(){
- const unit=$('#unit').value.trim(),dx=$('#dx').value.trim();
- if(!unit&&!imgs.length)return msg('単元名を入力するか、写真を追加してください。');
- const time=+val('time'),d=val('diff'),f=val('fmt'),am=val('am');
- const weak=Object.entries(S.stats).filter(([k,v])=>v.t>=2&&v.w/v.t>=.4).sort((a,b)=>b[1].w/b[1].t-a[1].w/a[1].t).slice(0,4).map(e=>e[0]);
- const p=`以下の条件でテストを作成してください。出力はJSONのみ（前後の文章・コードフェンス禁止）。
-【範囲】${unit||'添付写真の範囲'}${imgs.length?'（添付写真の内容も出題範囲・出題元として使う）':''}
-【難易度】${DF[d]}
-${dx?'【難易度への追加指示（最優先）】'+dx:''}
-【制限時間】${time}分。内容・難易度・形式から1問あたりの所要時間を見積もり、時間内に解き切れる問題数にする（各問のminutes合計が約${Math.round(time*.9)}分、見直し時間を1割残す）。
-【形式】${FM[f]}
-【解答方法】${AM[am]}
-${$('#weak').checked&&weak.length?'【苦手傾向】次の分野を気持ち多め（1〜2割増）に出題：'+weak.join('、'):''}
-ルール：
-- 数式は ^ で上付き、_ で下付き、分数は 3/4 や (x+1)/(x-1)、平方根は √ か sqrt(…)、記号はUnicode(π ≤ ≥ × ÷ ² ³)。LaTeX($や\\)は禁止。
-- 図表が必要ならtable(文字列の2次元配列)やfigure(白黒SVG。黒線・白塗りのみで色は一切使わない。viewBox指定、文字はtext要素)を使う。
-- explanationは「中学生に説明するように」やさしい言葉・短い文・手順を追って書く。必要ならexpTable/expFigureで図表を使う。
-- videoは解説動画をYouTubeで探すための検索キーワード。
-- topicは単元・分野の短い名前。pointsは配点(整数)。
-- choiceはchoices(4〜5個)とanswer(正解の番号。1始まりの整数)。writeはanswer(文字列)とalt(許容される別表記の配列)。
-- 正解が一意に決まり、必ず正しい問題にする。
-スキーマ:{"title":"","questions":[{"no":1,"section":"","topic":"","type":"choice|write","text":"","table":null,"figure":"","choices":[],"answer":"","alt":[],"explanation":"","expTable":null,"expFigure":"","video":"","points":5,"minutes":2}]}`;
- const b=$('#gen');b.disabled=true;msg('作成中です。数十秒〜数分かかります…');
- try{
-  const t=J(await ai([...imgs.map(img),{type:'text',text:p}],'あなたは日本の学校・大学入試に精通した出題者です。出力はJSONのみ。',16000));
-  const qs=(t.questions||[]).map((q,i)=>({...q,no:i+1,type:q.type=='choice'?'choice':'write',points:+q.points||5,choices:q.choices||[],alt:q.alt||[]}));
-  if(!qs.length)throw new Error('問題を取得できませんでした。もう一度お試しください。');
-  cur={id:Date.now(),title:t.title||unit||'テスト',meta:{time,diff:DL[d]+(dx?'＋指示':''),fmt:FL[f],am:AL[am]},qs,u:{},m:{},done:false,comment:''};
-  left=0;sub='q';save();msg('');go('test');
- }catch(e){msg('エラー：'+e.message)}
- b.disabled=false;
-}
-
-// ---------- 用紙 ----------
-const total=t=>t.qs.reduce((a,q)=>a+(+q.points||0),0);
-const head=(t,k)=>`<div class="hd"><div class="tt">${esc(t.title)}（${k}）</div><div class="sm">${t.meta.diff}・${t.meta.fmt}・制限時間${t.meta.time}分・${total(t)}点満点</div><div>氏名 <span class="ln"></span>　得点 <span class="ln" style="width:3em"></span> / ${total(t)}</div></div>`;
-const qBlock=(q,wk)=>`<div class="q"><div class="qn">問${q.no}<small>（${q.points}点）</small></div><div>${fmt(q.text)}${tbl(q.table)}${fig(q.figure)}${q.type=='choice'?`<ol class="cs">${q.choices.map((c,j)=>`<li>${MK[j]} ${fmt(c)}</li>`).join('')}</ol>`:wk?'<div class="wk"></div>':''}</div></div>`;
-const exBlock=q=>`<div>${fmt(q.explanation)}${tbl(q.expTable)}${fig(q.expFigure)}${yt(q)}</div>`;
-const ansText=q=>q.type=='choice'?`${MK[q.answer-1]||''} ${q.choices[q.answer-1]||''}`:String(q.answer);
-const show=(q,u)=>q.type=='choice'?(u?MK[u-1]:''):(u||'');
-function sheetHtml(k){const t=cur;
- if(k=='q'){let p='';return`<div class="sheet">${head(t,'問題用紙')}<p class="sm">※解答は解答用紙に記入すること。</p>`+t.qs.map(q=>{const h=q.section&&q.section!=p?`<h3>${fmt(q.section)}</h3>`:'';p=q.section||p;return h+qBlock(q,1)}).join('')+'</div>'}
- if(k=='a')return`<div class="sheet">${head(t,'解答用紙')}<table style="width:100%">${t.qs.map(q=>`<tr><td style="width:4em">問${q.no}</td><td class="${q.type=='choice'?'':'box'}">${q.type=='choice'?q.choices.map((_,j)=>MK[j]).join('　'):''}</td><td style="width:3.5em">${q.points}点</td></tr>`).join('')}</table></div>`;
- return`<div class="sheet">${head(t,'解答・解説')}`+t.qs.map(q=>`<div class="q"><div class="qn">問${q.no}　正解：${fmt(ansText(q))}</div>${exBlock(q)}</div>`).join('')+'</div>';
-}
-const SN={q:'問題用紙',a:'解答用紙',e:'解説'};
-function doPrint(h){$('#printroot').innerHTML=h;window.print()}
-const dl=(b,n)=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click()};
-const saveHtml=(h,n)=>dl(new Blob([`<!DOCTYPE html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(n)}</title><style>${$('#css').textContent}</style><div id="printroot" style="display:block;max-width:820px;margin:auto">${h}</div>`],{type:'text/html'}),n+'.html');
-
-// ---------- テスト画面 ----------
-const clk=()=>{const l=left||cur.meta.time*60;return String(Math.floor(l/60)).padStart(2,'0')+':'+String(l%60).padStart(2,'0')};
-function renderTest(){
- const el=$('#test');
- if(!cur){el.innerHTML='<p class="em">まだテストがありません。「つくる」から作成してください。</p>';return}
- el.innerHTML=`<div class="bar"><b id="clock" style="font:900 22px 'Noto Serif JP',serif">${clk()}</b><button data-a="timer" id="tbtn">${tm?'停止':'開始'}</button><span class="fill"></span>${Object.entries(SN).map(([k,l])=>`<button data-a="sub" data-s="${k}" class="${sub==k?'pri':''}" style="margin:0;padding:8px 14px">${l}</button>`).join('')}</div>
- <div class="bar"><button data-a="print">${SN[sub]}を印刷</button><button data-a="sav">HTML保存</button><button data-a="json">データ保存(JSON)</button></div>
- <div>${sheetHtml(sub)}</div>
- <h2>解答する</h2><div id="ans"></div><div id="res"></div>`;
- renderAns();renderRes();
-}
-function renderAns(){
- $('#ans').innerHTML=cur.qs.map(q=>`<div class="ar"><b>問${q.no}</b>`+(q.type=='choice'?q.choices.map((_,j)=>`<label class="ch" style="margin:0 4px 0 0"><input type="radio" name="a${q.no}" data-no="${q.no}" value="${j+1}" ${cur.u[q.no]==j+1?'checked':''}><span>${MK[j]}</span></label>`).join(''):`<input type="text" class="tx" data-no="${q.no}" value="${esc(cur.u[q.no]||'')}" placeholder="答えを入力" aria-label="問${q.no}の答え">`)+'</div>').join('')+
- `<div class="bar"><button class="pri" data-a="grade">アプリで採点する</button><label style="margin:18px 0 0">解答用紙の写真で採点：<input type="file" id="gph" accept="image/*" multiple></label></div>`;
-}
-const norm=s=>String(s??'').normalize('NFKC').toLowerCase().replace(/[\s。]/g,'').replace(/[−‐–]/g,'-');
-const ok=(q,u)=>q.type=='choice'?String(u)==String(q.answer):!!norm(u)&&[q.answer,...q.alt].some(a=>norm(a)==norm(u));
-function renderRes(){
- const el=$('#res'),ms=cur.m;
- if(!Object.keys(ms).length){el.innerHTML='';return}
- const sc=cur.qs.reduce((a,q)=>a+(ms[q.no]?q.points:0),0);
- el.innerHTML=`<h2>採点結果　${sc} / ${total(cur)}点</h2>`+cur.qs.map(q=>`<div class="rr"><button class="mk" data-a="flip" data-no="${q.no}" aria-label="問${q.no}の○×を切り替え">${ms[q.no]?'○':'×'}</button><div>問${q.no}　あなたの答え：${fmt(show(q,cur.u[q.no]))||'（空欄）'}<br>正解：${fmt(ansText(q))}</div></div>`).join('')+
- `<p class="sm">○×をタップすると手動で直せます。</p>`+(cur.done?`<div class="cm"><b>AIコメント</b><br>${fmt(cur.comment||'作成中…')}</div>`:`<button class="pri" data-a="fin">結果を確定して振り返りに保存</button>`);
-}
-async function pg(files){
- if(!files.length||!cur)return;
- $('#res').innerHTML='写真を読み取っています…';
- try{
-  const ims=await Promise.all([...files].map(rd));
-  const list=cur.qs.map(q=>`問${q.no} ${q.type} 正解:${q.type=='choice'?q.answer+'番':q.answer}${q.alt.length?' 許容:'+q.alt.join('/'):''}`).join('\n');
-  const r=J(await ai([...ims.map(img),{type:'text',text:`解答用紙の写真です。各問の手書き解答を読み取り、正解と照合して採点してください。選択問題のreadは選んだ番号（数字）、未記入は""。数学的に同値な表記は正解。JSONのみ：{"results":[{"no":1,"read":"","correct":true}]}\n${list}`}],'あなたは採点者です。出力はJSONのみ。',4000));
-  r.results.forEach(x=>{if(cur.qs.some(q=>q.no==x.no)){cur.u[x.no]=String(x.read??'');cur.m[x.no]=!!x.correct}});
-  save();renderTest();
- }catch(e){$('#res').textContent='読み取りエラー：'+e.message}
-}
-async function fin(){
- if(cur.done)return;
- cur.qs.forEach(q=>{const tp=q.topic||'その他',s=S.stats[tp]||(S.stats[tp]={w:0,t:0});s.t++;
-  if(!cur.m[q.no]){s.w++;const id=cur.id+'-'+q.no;S.mis=S.mis.filter(x=>x.id!=id);S.mis.push({id,title:cur.title,q,my:cur.u[q.no]||''})}});
- cur.done=true;cur.comment='';save();renderRes();
- const rs=cur.qs.map(q=>`問${q.no}[${q.topic}] ${cur.m[q.no]?'○':'×'} 解答:${show(q,cur.u[q.no])||'空欄'} 正解:${q.answer}`).join('\n');
- const hist=Object.entries(S.stats).map(([k,v])=>`${k}:${v.w}/${v.t}ミス`).join('、');
- try{cur.comment=await ai(`採点結果:\n${rs}\n\nこれまでの分野別ミス:${hist}\n\nこの解答者の間違えやすいポイントやクセを分析し、アドバイスして。`,'あなたは高校生の友達のような塾講師です。説明の中身は中学生にも分かる端的さ、口調は高校生向け（親しみやすく、フランクだが失礼でない）。箇条書き3点以内、全体で300字以内。',1500)}catch(e){cur.comment='コメントを取得できませんでした：'+e.message}
- save();renderRes();
-}
-
-// ---------- 振り返り ----------
-const mHtml=(m,b)=>`<div class="q"><div class="qn">${esc(m.title)}</div>${qBlock(m.q)}<p>あなたの答え：${fmt(show(m.q,m.my))||'（空欄）'}　正解：${fmt(ansText(m.q))}</p>${exBlock(m.q)}${b?`<button data-a="delm" data-id="${m.id}">この問題を削除（克服した）</button><hr>`:''}</div>`;
-const revSheet=()=>`<div class="sheet"><div class="hd"><div class="tt">振り返りプリント</div></div>${S.mis.map(m=>mHtml(m)).join('')}</div>`;
-function renderRev(){
- const st=Object.entries(S.stats).sort((a,b)=>b[1].w/b[1].t-a[1].w/a[1].t);
- $('#rev').innerHTML='<h2>苦手分野の分析</h2>'+(st.length?st.map(([k,v])=>{const r=Math.round(100*(v.t-v.w)/v.t),n=Math.round(r/10);return`<div>${esc(k)}　${'■'.repeat(n)}${'□'.repeat(10-n)} 正答率${r}%（${v.w}/${v.t}ミス）</div>`}).join(''):'<p class="em">採点を確定すると、ここに分析が表示されます。</p>')+
- `<h2>間違えた問題（${S.mis.length}問）</h2>`+(S.mis.length?`<div class="bar"><button data-a="rprint">印刷</button><button data-a="rsave">HTML保存</button><button data-a="delall">すべて削除</button></div><div class="sheet" style="font-size:15px">${S.mis.map(m=>mHtml(m,1)).join('')}</div>`:'<p class="em">間違えた問題がここにたまります。</p>');
-}
-
-// ---------- 画面切替・イベント ----------
-function go(v){
- document.querySelectorAll('.v').forEach(s=>s.hidden=s.id!=v);
- document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v==v));
- if(v=='test')renderTest();if(v=='rev')renderRev();scrollTo(0,0);
-}
-const A={
- go:b=>go(b.dataset.v),gen,
- rm:b=>{imgs.splice(+b.dataset.i,1);thumbs()},
- sub:b=>{sub=b.dataset.s;renderTest()},
- timer:()=>{if(tm){clearInterval(tm);tm=null}else{if(!left)left=cur.meta.time*60;tm=setInterval(()=>{left--;$('#clock')&&($('#clock').textContent=clk());if(left<=0){clearInterval(tm);tm=null;left=0;alert('時間です')}},1000)}$('#tbtn').textContent=tm?'停止':'開始'},
- print:()=>doPrint(sheetHtml(sub)),
- sav:()=>saveHtml(sheetHtml(sub),cur.title+'_'+SN[sub]),
- json:()=>dl(new Blob([JSON.stringify(cur)],{type:'application/json'}),cur.title+'.json'),
- grade:()=>{if(cur.done)return alert('確定済みのテストです。');cur.qs.forEach(q=>cur.m[q.no]=ok(q,cur.u[q.no]));save();renderRes()},
- flip:b=>{if(cur.done)return;cur.m[b.dataset.no]=!cur.m[b.dataset.no];save();renderRes()},
- fin,
- delm:b=>{S.mis=S.mis.filter(x=>x.id!=b.dataset.id);save();renderRev()},
- delall:()=>{if(confirm('振り返りの問題をすべて削除しますか？')){S.mis=[];save();renderRev()}},
- rprint:()=>doPrint(revSheet()),rsave:()=>saveHtml(revSheet(),'振り返り'),
- saveset:()=>{S.key=$('#key').value.trim();S.model=$('#model').value.trim()||'claude-sonnet-5-5';save();alert('保存しました')},
- loadj:()=>$('#lj').click(),
- reset:()=>{if(confirm('履歴・分析・振り返り・設定をすべて消去しますか？')){localStorage.removeItem('tm');localStorage.removeItem('tmc');location.reload()}}
+// === 1. STATE & STORAGE ===
+const K = 'mono_test_v1';
+const load = () => JSON.parse(localStorage.getItem(K) || '{}');
+const saved = load();
+const S = {
+  tab: 'setup',
+  apiKey: saved.apiKey || '',
+  cfg: { topic:'', diff:'普通', diffNote:'', time:30, mode:'模試', ansType:'複合', useWeak:true },
+  srcImgs: [], ansImgs: [],
+  test: saved.test || null,
+  ans: saved.ans || {},
+  grade: saved.grade || null,
+  reviews: saved.reviews || [],
+  weakLog: saved.weakLog || [],
+  sec: 0, timerId: null
 };
-document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b)A[b.dataset.a](b)});
-document.addEventListener('input',e=>{const n=e.target.dataset&&e.target.dataset.no;if(n&&cur&&!cur.done){cur.u[n]=e.target.value;save()}});
-document.addEventListener('change',async e=>{
- if(e.target.id=='photos'){for(const f of e.target.files)imgs.push(await rd(f));e.target.value='';thumbs()}
- if(e.target.id=='gph')pg(e.target.files);
- if(e.target.id=='lj'&&e.target.files[0]){try{const t=JSON.parse(await e.target.files[0].text());if(!t.qs)throw 0;cur=t;left=0;save();go('test')}catch{alert('読み込めないファイルです')}}
+const persist = () => localStorage.setItem(K, JSON.stringify({
+  apiKey: S.apiKey, test: S.test, ans: S.ans, grade: S.grade, reviews: S.reviews, weakLog: S.weakLog
+}));
+
+// PWA Manifest (Mono Icon)
+(() => {
+  const m = { name:'MONO-TEST STUDIO', short_name:'MONO-TEST', start_url:'.', display:'standalone', background_color:'#fff', theme_color:'#000' };
+  const l = document.createElement('link');
+  l.rel = 'manifest'; l.href = URL.createObjectURL(new Blob([JSON.stringify(m)], {type:'application/json'}));
+  document.head.appendChild(l);
+})();
+
+// === 2. API & PROMPTS ===
+const MODEL = 'gemini-2.5-flash';
+const setStatus = msg => {
+  const el = document.getElementById('status');
+  el.textContent = msg; el.style.display = msg ? 'block' : 'none';
+};
+const parseJson = txt => {
+  const s = txt.replace(/```json|```/g, '').trim();
+  const m = s.match(/\{[\s\S]*\}/);
+  if (!m) throw new Error('JSON抽出失敗');
+  try { return JSON.parse(m[0]); }
+  catch { return JSON.parse(m[0].replace(/\\(?!["\\/bfnrtu])/g, '\\\\')); }
+};
+async function callGemini(prompt, imgs = []) {
+  if (!S.apiKey) throw new Error('上部の入力欄にGemini API Keyを設定してください');
+  const parts = [{ text: prompt }, ...imgs.map(d => ({ inline_data: { mime_type: d.mime, data: d.b64 } }))];
+  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${S.apiKey}`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contents: [{ parts }], generationConfig: { responseMimeType: 'application/json' } })
+  });
+  if (!r.ok) throw new Error(`API Error: ${r.status}`);
+  const j = await r.json();
+  return parseJson(j.candidates?.[0]?.content?.parts?.[0]?.text || '');
+}
+
+const PROMPTS = {
+  gen: () => `あなたは厳格な試験作成官兼、分かりやすい解説講師です。以下の条件で白黒印刷用の試験を作成し、純粋なJSONのみを返してください。
+[条件]
+・単元/範囲: ${S.cfg.topic || '添付画像の範囲'}
+・難易度: ${S.cfg.diff}（簡単=学校の定期テスト基礎〜応用 / 普通=大学入試武器レベル / 難関=極限の難問） ${S.cfg.diffNote ? '追加指示:' + S.cfg.diffNote : ''}
+・制限時間: ${S.cfg.time}分（この時間で解き切れる適切な問題数・大問構成を自動計算すること）
+・形式: ${S.cfg.mode}モード（模試/共通テスト/データ準拠）
+・解答方法: ${S.cfg.ansType}（複合/記述のみ/選択肢のみ）
+${S.cfg.useWeak && S.weakLog.length ? `・弱点強化ON（以下を気持ち多めに出題）: ${S.weakLog.slice(-5).join(' / ')}` : ''}
+[厳守事項]
+1. 数式は必ずLaTeX形式（$x^2$, $\\frac{a}{b}$等）にし、生の x^2 表記を残さない。JSON内ではバックスラッシュを二重エスケープする。
+2. 解説は「中学生に説明するように」噛み砕く。
+3. 各問題に4段階思考フロー(flow: [条件抽出, 方針選択, 計算/論理, 検算/罠])、整理表(table: {head:[], rows:[[]]})、白黒専用SVG図解(svg: viewBox="0 0 560 220", 黒と白と破線のみ, 文字重複厳禁)、関連YouTube検索語(ytQuery)を含める。
+[JSONスキーマ]
+{"title":"試験タイトル","subtitle":"範囲・形式","timeMin":${S.cfg.time},"questions":[{"id":"1","type":"choice|text","points":10,"stem":"問題文","choices":["選択肢1","選択肢2","選択肢3","選択肢4"],"answer":"正解(選択肢は1-4の数字またはテキスト)","explain":"中学生向けの丁寧な解説","flow":["STEP1: ...","STEP2: ...","STEP3: ...","STEP4: ..."],"table":{"head":["項目","内容"],"rows":[["A","B"]]},"svg":"<svg viewBox='0 0 560 220' xmlns='http://www.w3.org/2000/svg'>...</svg>","ytQuery":"検索ワード"}]}`,
+
+  grade: (isPhoto) => `以下の試験と解答を採点し、純粋なJSONのみ返してください。
+[試験データ] ${JSON.stringify(S.test.questions.map(q => ({ id: q.id, stem: q.stem, type: q.type, answer: q.answer, points: q.points })))}
+${isPhoto ? '[採点対象] 添付された手書き解答用紙の写真を読み取って各問の解答を特定し採点せよ。' : '[ユーザー解答] ' + JSON.stringify(S.ans)}
+[厳守事項]
+・AIコメント(advice)は「中学生に教えるように端的に、ただし口調は高校生向け（親しみやすく対等な敬語・タメ口寄り）」で、間違えやすい癖と対策を書く。
+・weaknessPatternは今回の誤答から分析した弱点傾向を1行で要約（今後の自動分析に蓄積）。
+[JSONスキーマ]
+{"total":0,"max":100,"advice":"高校生向けの端的なアドバイス","weaknessPattern":"弱点傾向の要約","results":[{"id":"1","userAns":"読み取った解答","mark":"〇|△|×","score":10,"comment":"一言講評"}]}`
+};
+
+// === 3. UTILS & SAFE SVG ===
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safeSvg = (svg, flow = []) => {
+  if (typeof svg === 'string' && svg.includes('<svg') && svg.includes('</svg>')) return svg;
+  const steps = flow.slice(0, 4).map((t, i) => `<rect x="20" y="${12+i*50}" width="520" height="36" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="32" y="${35+i*50}" font-size="12" fill="#000">${esc(t.slice(0,48))}</text>`).join('');
+  return `<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">${steps}</svg>`;
+};
+const readFiles = files => Promise.all([...files].map(f => new Promise(res => {
+  const r = new FileReader();
+  r.onload = () => res({ mime: f.type, b64: r.result.split(',')[1], url: r.result });
+  r.readAsDataURL(f);
+})));
+
+// === 4. VIEWS ===
+const V = {
+  nav: () => [
+    ['setup','作成設定'], ['paper','問題用紙'], ['sheet','解答用紙・採点'],
+    ['guide','図解解説'], ['review',`振り返り(${S.reviews.length})`]
+  ].map(([k, l]) => `<button data-act="tab" data-v="${k}" class="${S.tab===k?'on':''}">${l}</button>`).join(''),
+
+  setup: () => `
+    <div class="box">
+      <div class="grid">
+        <div><label>単元名・範囲（写真と併用可）</label><input data-bind="topic" value="${esc(S.cfg.topic)}" placeholder="例：数学Ⅱ 微分積分 / 英語 関係代名詞"></div>
+        <div><label>範囲の写真（複数可）</label><input type="file" accept="image/*" multiple data-act="srcImg"><div class="thumbs">${S.srcImgs.map(i=>`<img src="${i.url}">`).join('')}</div></div>
+      </div>
+      <div class="grid" style="margin-top:8px">
+        <div><label>難易度</label><select data-bind="diff">${['簡単','普通','難関'].map(v=>`<option ${S.cfg.diff===v?'selected':''}>${v}</option>`).join('')}</select></div>
+        <div><label>難易度カスタム指示</label><input data-bind="diffNote" value="${esc(S.cfg.diffNote)}" placeholder="例：証明を多め、ひっかけ重視"></div>
+        <div><label>制限時間（問題量を自動計算）</label><select data-bind="time">${[10,30,50,90].map(v=>`<option value="${v}" ${S.cfg.time==v?'selected':''}>${v===90?'1時間30分':v+'分'}</option>`).join('')}</select></div>
+        <div><label>問題形式</label><select data-bind="mode">${['模試','共通テスト','データ'].map(v=>`<option ${S.cfg.mode===v?'selected':''}>${v}</option>`).join('')}</select></div>
+        <div><label>解答方法</label><select data-bind="ansType">${['複合','記述のみ','選択肢のみ'].map(v=>`<option ${S.cfg.ansType===v?'selected':''}>${v}</option>`).join('')}</select></div>
+      </div>
+      <div class="row" style="margin-top:10px;justify-content:space-between">
+        <label class="row"><input type="checkbox" style="width:auto" data-bind="useWeak" ${S.cfg.useWeak?'checked':''}> 弱点傾向を出題に反映（OFFでも分析は継続 / 蓄積:${S.weakLog.length}件）</label>
+        <button class="pri" data-act="generate">テストを作成する</button>
+      </div>
+    </div>`,
+
+  paper: () => !S.test ? `<div class="box">まだテストが作成されていません。</div>` : `
+    <div class="row no-print" style="margin-bottom:8px">
+      <button data-act="print">問題用紙を印刷</button>
+      <button data-act="exportTxt">テキスト保存</button>
+    </div>
+    <div class="paper">
+      <div class="paper-hd">
+        <div><h2>${esc(S.test.title)}</h2><div class="muted">${esc(S.test.subtitle)}</div></div>
+        <div>制限時間：${S.test.timeMin}分 ／ 氏名：＿＿＿＿＿＿＿＿</div>
+      </div>
+      ${S.test.questions.map(q => `
+        <div class="q-card">
+          <div><b>問${esc(q.id)}</b> <span class="tag">${q.points}点</span></div>
+          <div style="margin:6px 0">${esc(q.stem)}</div>
+          ${q.type==='choice' && q.choices?.length ? `<div>${q.choices.map((c,i)=>{
+            const n = String(i+1);
+            return `<button class="opt ${S.ans[q.id]===n?'sel':''}" data-act="pick" data-q="${esc(q.id)}" data-v="${n}">(${n}) ${esc(c)}</button>`;
+          }).join('')}</div>` : `<div class="muted">※解答用紙に記述してください</div>`}
+        </div>`).join('')}
+    </div>`,
+
+  sheet: () => !S.test ? `<div class="box">まだテストが作成されていません。</div>` : `
+    <div class="row no-print" style="margin-bottom:8px">
+      <button data-act="print">解答用紙を印刷</button>
+      <button class="pri" data-act="gradeApp">入力内容でAI採点</button>
+      <label class="opt" style="margin:0;cursor:pointer">手書き解答を写真で採点<input type="file" accept="image/*" multiple data-act="gradePhoto" style="display:none"></label>
+    </div>
+    ${S.grade ? `<div class="box">
+      <div class="row" style="justify-content:space-between">
+        <h3>得点：${S.grade.total} / ${S.grade.max} 点</h3>
+        <span class="tag">弱点分析更新済</span>
+      </div>
+      <p style="margin-top:6px"><b>AIアドバイス：</b>${esc(S.grade.advice)}</p>
+    </div>` : ''}
+    <div class="paper">
+      <div class="paper-hd"><h2>${esc(S.test.title)} 解答用紙</h2><div>得点：＿＿＿ ／ 氏名：＿＿＿＿＿＿</div></div>
+      ${S.test.questions.map(q => {
+        const r = S.grade?.results?.find(x => String(x.id) === String(q.id));
+        return `<div class="sheet-row">
+          <div><b>問${esc(q.id)}</b>${r ? `<div class="mark" style="margin-top:4px">${esc(r.mark)}</div>` : ''}</div>
+          <div>
+            ${q.type==='choice' && q.choices?.length
+              ? q.choices.map((_,i)=>{ const n=String(i+1); return `<button class="opt ${S.ans[q.id]===n?'sel':''}" data-act="pick" data-q="${esc(q.id)}" data-v="${n}">${n}</button>`; }).join('')
+              : `<textarea rows="2" data-act="inputAns" data-q="${esc(q.id)}" placeholder="ここに記述">${esc(S.ans[q.id]||'')}</textarea>`}
+            ${r ? `<div class="muted" style="margin-top:4px">判定: ${r.score}点 / 読取: ${esc(r.userAns)} / ${esc(r.comment)}</div>` : ''}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`,
+
+  guide: () => !S.test ? `<div class="box">まだテストが作成されていません。</div>` : `
+    <div class="row no-print" style="margin-bottom:8px">
+      <button data-act="print">解説を印刷</button>
+      <button data-act="exportTxt">解説込みテキスト保存</button>
+    </div>
+    <div class="paper">
+      <div class="paper-hd"><h2>${esc(S.test.title)} 図解解説・思考フロー</h2><div>中学生にもわかる完全ガイド</div></div>
+      ${S.test.questions.map(q => `
+        <div class="q-card">
+          <div class="row" style="justify-content:space-between">
+            <b>問${esc(q.id)} 【正解】 ${esc(q.answer)}</b>
+            <a class="tag no-print" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=${encodeURIComponent(q.ytQuery||q.stem.slice(0,20))}">▶ 関連解説動画(YouTube)</a>
+          </div>
+          <p style="margin:6px 0">${esc(q.explain)}</p>
+          <div class="flow">${(q.flow||[]).map(f=>`<div class="flow-step">${esc(f)}</div>`).join('')}</div>
+          <div class="svg-box">${safeSvg(q.svg, q.flow)}</div>
+          ${q.table?.head?.length ? `<table><thead><tr>${q.table.head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${(q.table.rows||[]).map(rw=>`<tr>${rw.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>` : ''}
+        </div>`).join('')}
+    </div>`,
+
+  review: () => `
+    <div class="box">
+      <div class="row" style="justify-content:space-between;margin-bottom:8px">
+        <b>振り返りノート（間違えた問題）</b>
+        ${S.reviews.length ? `<button class="pri" data-act="retest">振り返り問題で再テスト</button>` : ''}
+      </div>
+      ${!S.reviews.length ? `<p class="muted">間違えた問題はまだありません。</p>` : S.reviews.map((q, i) => `
+        <div class="q-card">
+          <div class="row" style="justify-content:space-between">
+            <b>${esc(q.stem.slice(0,60))}...</b>
+            <button data-act="delRev" data-v="${i}">削除</button>
+          </div>
+          <details style="margin-top:6px"><summary>正解と図解解説を見る</summary>
+            <p style="margin:6px 0"><b>正解：</b>${esc(q.answer)}<br>${esc(q.explain)}</p>
+            <div class="flow">${(q.flow||[]).map(f=>`<div class="flow-step">${esc(f)}</div>`).join('')}</div>
+          </details>
+        </div>`).join('')}
+    </div>`
+};
+
+function render() {
+  document.getElementById('apiKey').value = S.apiKey;
+  document.getElementById('nav').innerHTML = V.nav();
+  const app = document.getElementById('app');
+  app.innerHTML = V[S.tab]();
+  if (window.renderMathInElement) {
+    renderMathInElement(app, { delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}], throwOnError: false });
+  }
+}
+
+// === 5. ACTIONS (Event Delegation) ===
+const ACT = {
+  tab: el => { S.tab = el.dataset.v; render(); },
+  pick: el => { S.ans[el.dataset.q] = el.dataset.v; persist(); render(); },
+  print: () => window.print(),
+  delRev: el => { S.reviews.splice(+el.dataset.v, 1); persist(); render(); },
+  retest: () => {
+    S.test = { title:'振り返り復習テスト', subtitle:'誤答問題からの再出題', timeMin:15, questions: S.reviews.map((q,i)=>({...q, id:String(i+1)})) };
+    S.ans = {}; S.grade = null; S.tab = 'paper'; persist(); render();
+  },
+  toggleTimer: () => {
+    if (S.timerId) { clearInterval(S.timerId); S.timerId = null; return; }
+    if (!S.sec) S.sec = (S.test?.timeMin || S.cfg.time) * 60;
+    S.timerId = setInterval(() => {
+      S.sec = Math.max(0, S.sec - 1);
+      const m = String(Math.floor(S.sec/60)).padStart(2,'0'), s = String(S.sec%60).padStart(2,'0');
+      document.getElementById('timer').textContent = `${m}:${s}`;
+      if (!S.sec) { clearInterval(S.timerId); S.timerId = null; }
+    }, 1000);
+  },
+  generate: async () => {
+    try {
+      setStatus('テストと図解解説を生成中...');
+      S.test = await callGemini(PROMPTS.gen(), S.srcImgs);
+      S.ans = {}; S.grade = null; S.sec = (S.test.timeMin || S.cfg.time) * 60;
+      S.tab = 'paper'; persist(); render(); setStatus('');
+    } catch (e) { setStatus('エラー: ' + e.message); }
+  },
+  gradeApp: () => runGrade(false),
+  exportTxt: () => {
+    if (!S.test) return;
+    const txt = `${S.test.title}\n${S.test.subtitle}\n\n` + S.test.questions.map(q =>
+      `[問${q.id}](${q.points}点)\n${q.stem}\n${(q.choices||[]).map((c,i)=>`(${i+1}) ${c}`).join(' / ')}\n正解: ${q.answer}\n解説: ${q.explain}\n思考フロー:\n${(q.flow||[]).join('\n')}\n`
+    ).join('\n---\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([txt], {type:'text/plain'}));
+    a.download = `${S.test.title || 'test'}.txt`; a.click();
+  }
+};
+
+async function runGrade(isPhoto) {
+  try {
+    setStatus('AI採点・弱点分析中...');
+    S.grade = await callGemini(PROMPTS.grade(isPhoto), isPhoto ? S.ansImgs : []);
+    if (S.grade.weaknessPattern) S.weakLog.push(S.grade.weaknessPattern);
+    (S.grade.results || []).forEach(r => {
+      if (r.mark !== '〇') {
+        const q = S.test.questions.find(x => String(x.id) === String(r.id));
+        if (q && !S.reviews.some(v => v.stem === q.stem)) S.reviews.push(q);
+      }
+    });
+    S.tab = 'sheet'; persist(); render(); setStatus('');
+  } catch (e) { setStatus('採点エラー: ' + e.message); }
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (el && ACT[el.dataset.act]) ACT[el.dataset.act](el);
+});
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.id === 'apiKey') { S.apiKey = t.value.trim(); persist(); }
+  else if (t.dataset.bind) { S.cfg[t.dataset.bind] = t.type === 'checkbox' ? t.checked : t.value; }
+  else if (t.dataset.act === 'inputAns') { S.ans[t.dataset.q] = t.value; persist(); }
+});
+document.addEventListener('change', async e => {
+  const t = e.target;
+  if (t.dataset.act === 'srcImg') { S.srcImgs = await readFiles(t.files); render(); }
+  else if (t.dataset.act === 'gradePhoto' && t.files.length) { S.ansImgs = await readFiles(t.files); runGrade(true); }
 });
 
-// ---------- アイコン（ホーム画面追加用） ----------
-function icon(n){const c=document.createElement('canvas');c.width=c.height=n;const x=c.getContext('2d');
- x.fillStyle='#000';x.fillRect(0,0,n,n);x.fillStyle='#fff';x.fillRect(n*.2,n*.14,n*.6,n*.72);
- x.strokeStyle='#000';x.lineWidth=n*.035;for(let i=0;i<4;i++){x.beginPath();x.moveTo(n*.28,n*(.28+i*.12));x.lineTo(n*.5,n*(.28+i*.12));x.stroke()}
- x.lineWidth=n*.05;x.beginPath();x.arc(n*.65,n*.64,n*.12,0,7);x.stroke();return c.toDataURL('image/png')}
-$('#fi').href=icon(64);$('#ai').href=icon(180);
-try{$('#mf').href=URL.createObjectURL(new Blob([JSON.stringify({name:'テストメーカー',short_name:'テスト',display:'standalone',background_color:'#ffffff',theme_color:'#ffffff',start_url:location.href.split('#')[0],icons:[{src:icon(192),sizes:'192x192',type:'image/png'},{src:icon(512),sizes:'512x512',type:'image/png'}]})],{type:'application/manifest+json'}))}catch{}
-$('#key').value=S.key;$('#model').value=S.model;
+render();
 </script>
 </body>
 </html>
